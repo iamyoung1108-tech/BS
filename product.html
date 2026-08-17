@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFAF8">
+<title>BACKSTAGE｜垂墜感西裝寬褲（附綁帶）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BACKSTAGE 商品頁雛型 · 風格 A「暖白畫廊」
+   主圖 2:3 原比例不裁切（對應現有 1280x1920 原圖）
+   手機主圖滿版寬＋黏底加入購物車；桌機左圖右文、右欄黏頂
+   推薦商品維持 4:5 與列表一致
+   全站 RWD：手機（預設）→ 平板 ≥720px → 桌機 ≥1080px
+   ============================================================ */
+/* ===== BACKSTAGE Design Tokens v1 — 三支檔案共用，勿在單頁另外定義 ===== */
+:root{
+  /* 底與面 */
+  --c-bg:#FAFAF8; --c-surface:#FFFFFF; --c-surface-2:#F6F5F1;
+
+  /* 文字 */
+  --c-ink:#1F1F1D; --c-ink-2:#5A5A56; --c-ink-3:#8B8B85;
+
+  /* 線 */
+  --c-line:#E9E7E2; --c-line-2:#D6D2CB;
+
+  /* 品牌棕 */
+  --c-brand:#A8837C; --c-brand-bg:#F4EEEB; --c-brand-ink:#6B4F49;
+
+  /* 行動 */
+  --c-action:#1F1F1D; --c-action-on:#FFFFFF;
+
+  /* 狀態 */
+  --c-sale:#C0392B; --c-sale-bg:#FCEFEE;
+  --c-err:#C0392B;  --c-err-bg:#FCEFEE;
+  --c-ok:#2E7D4F;   --c-ok-bg:#EDF5F0;
+  --c-warn:#8A6D3B; --c-warn-bg:#FAF4E8;
+
+  /* 字體 */
+  --f-title:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+  --f-body:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-num:"Inter","Noto Sans TC",sans-serif;
+
+  /* 字級 */
+  --fs-hero:29px; --fs-h1:22px; --fs-h2:17px;
+  --fs-body:15px; --fs-sm:13.5px; --fs-xs:12.5px; --fs-2xs:11.5px;
+  --fs-price:20px; --fs-input:16px; /* 輸入框永遠 16，防 iOS 自動放大 */
+
+  /* 行高與字距 */
+  --lh-body:1.8; --lh-tight:1.4; --lh-dense:1.6;
+  --ls-body:.02em; --ls-title:.12em; --ls-mark:.22em;
+
+  /* 間距 */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+
+  /* 圓角與陰影 */
+  --r-sm:2px; --r-md:8px; --r-pill:100px;
+  --shadow-soft:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+
+  /* 按鈕高度 */
+  --h-btn:52px; --h-btn-2:48px; --h-btn-3:44px; --h-btn-mini:36px;
+
+  /* 版心與邊距 */
+  --max-w:1360px; --max-w-flow:1040px; --max-w-form:600px; --edge:12px;
+
+  /* 層級 */
+  --z-raise:10; --z-sticky:20; --z-header:30; --z-bottom:35;
+  --z-drawer:40; --z-modal:50; --z-sheet:55; --z-toast:60; --z-overlay:70;
+
+  /* 動態 */
+  --dur:.2s; --ease:cubic-bezier(.4,0,.2,1);
+}
+@media(min-width:720px){:root{--edge:20px}}
+@media(min-width:1080px){:root{
+  --edge:36px; --fs-hero:48px; --fs-h1:28px; --fs-price:24px;
+}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--c-bg);color:var(--c-ink);
+  font-family:var(--f-body);font-size:15px;
+  line-height:var(--lh-body);letter-spacing:var(--ls-body);
+  font-synthesis:none;font-feature-settings:"palt" 1;line-break:strict;
+  text-spacing-trim:trim-start;text-autospace:normal;
+  -webkit-font-smoothing:antialiased;
+  /* 手機黏底 CTA 的讓位：bar 高度＋iPhone 底部安全區，不然最後一個區塊會被切一半 */
+  padding-bottom:calc(94px + env(safe-area-inset-bottom));
+}
+@media(min-width:1080px){body{padding-bottom:0}}
+h1,h2,h3{margin:0;font-weight:500;line-height:var(--lh-tight);text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer}
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 var(--edge)}
+
+/* ---- 圖片占位 ---- */
+.ph{position:relative;border-radius:var(--r-sm);overflow:hidden;
+  background:linear-gradient(160deg,#EFEDE8 0%,#E4DFD6 60%,#DAD2C5 100%)}
+.ph::after{content:attr(data-label);position:absolute;inset:auto 0 12px 0;text-align:center;
+  font-size:11px;letter-spacing:.14em;color:#A39B8D}
+
+/* ---- 公告列＋頁首：手機只留一條品牌細列（Meta 廣告冷流量要知道自己在誰的店） ---- */
+@media(max-width:1079px){
+  .notice,header{display:none}
+}
+/* 品牌名交給瀏覽器的標題列（BACKSTAGE｜商品名），頁面上不再重複一條 */
+.notice{background:var(--c-ink);color:#EDEBE6;font-size:12.5px;text-align:center;
+  padding:9px var(--edge);letter-spacing:.04em}
+.notice b{font-family:var(--f-num);font-weight:500}
+.notice .cd{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.notice .n-short{display:none}
+@media(max-width:719px){.notice .n-long{display:none}.notice .n-short{display:inline}}
+header{position:sticky;top:0;z-index:30;background:rgba(250,250,248,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--c-line)}
+/* 手機首屏寸土寸金：搜尋列收進放大鏡，點了才展開 */
+.search-row{padding-top:2px;padding-bottom:10px;display:none}
+.search-row.open{display:block}
+.search-box{display:flex;align-items:center;gap:8px;height:42px;background:var(--c-surface);
+  border:1px solid var(--c-line-2);border-radius:21px;padding:0 14px}
+.search-box svg{width:17px;height:17px;stroke:var(--c-ink-3);fill:none;stroke-width:1.5;flex:none}
+.search-box input{flex:1;min-width:0;border:0;outline:0;background:none;font-family:inherit;
+  font-size:var(--fs-input);color:var(--c-ink);letter-spacing:inherit}
+.search-box input::placeholder{color:var(--c-ink-3)}
+@media(min-width:1080px){.search-row{display:none}}
+.search-inline{display:none}
+@media(min-width:1080px){
+  .search-inline{display:flex;align-items:center;gap:8px;height:38px;width:230px;
+    background:var(--c-surface);border:1px solid var(--c-line-2);border-radius:19px;
+    padding:0 12px;margin-right:6px}
+  .search-inline svg{width:16px;height:16px;stroke:var(--c-ink-3);fill:none;stroke-width:1.5;flex:none}
+  .search-inline input{flex:1;min-width:0;border:0;outline:0;background:none;font-family:inherit;
+    font-size:var(--fs-input);color:var(--c-ink);letter-spacing:inherit}
+  .search-inline input::placeholder{color:var(--c-ink-3)}
+}
+.icon-btn.member{display:none}
+@media(min-width:1080px){.icon-btn.member{display:flex}}
+.icon-btn.srch{display:flex}
+@media(min-width:1080px){.icon-btn.srch{display:none}}
+.hd{display:flex;align-items:center;height:56px;gap:var(--s4);position:relative}
+.logo{font-family:var(--f-title);font-size:19px;font-weight:600;letter-spacing:.22em;text-indent:.22em;
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+@media(min-width:1080px){.logo{position:static;transform:none}}
+.hd-icons{display:flex;align-items:center;gap:2px;margin-left:auto}
+.icon-btn{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--c-ink)}
+.icon-btn svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.5;fill:none}
+.cart-n{position:absolute;top:6px;right:4px;min-width:16px;height:16px;border-radius:8px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  transition:transform var(--dur) var(--ease)}
+.cart-n.bump{transform:scale(1.35)}
+.burger{width:44px;height:44px;background:none;border:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px}
+.burger span{width:20px;height:1.5px;background:var(--c-ink)}
+nav.main{display:none}
+@media(min-width:1080px){
+  .burger{display:none}
+  .hd{height:68px}
+  .logo{font-size:22px}
+  nav.main{display:flex;gap:var(--s6);margin-left:var(--s7);font-size:14px}
+  nav.main a{padding:6px 0;border-bottom:1px solid transparent;transition:border-color var(--dur) var(--ease)}
+  nav.main a:hover{border-color:var(--c-ink)}
+  nav.main a.hot{color:var(--c-brand-ink);border-color:var(--c-brand)}
+}
+.drawer{position:fixed;inset:0;z-index:40;display:none}
+.drawer.open{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.drawer .panel{position:absolute;top:0;left:0;bottom:0;width:min(320px,84vw);background:var(--c-surface);
+  padding:var(--s6) var(--s5);overflow-y:auto}
+.drawer .panel a{display:block;padding:14px 0;font-size:16px;border-bottom:1px solid var(--c-line)}
+.drawer .panel .sub{font-size:13px;color:var(--c-ink-3);margin-top:var(--s5)}
+
+/* ---- 麵包屑：手機不放，改由返回鍵與底部入口負責 ---- */
+.crumb{display:none;font-size:12.5px;color:var(--c-ink-3);padding:10px 0}
+@media(min-width:1080px){.crumb{display:block}}
+.crumb a:hover{color:var(--c-ink)}
+
+/* ---- 主結構：手機單欄、桌機左圖右文 ---- */
+.pdp{display:grid;gap:var(--s3)}
+.pdp > *{min-width:0} /* 防止縮圖列的內容寬度撐破版面（手機右側留空 bug 的根源） */
+html,body{overflow-x:clip}
+@media(min-width:1080px){
+  .pdp{grid-template-columns:minmax(0,11fr) minmax(0,9fr);gap:var(--s8);align-items:start}
+  .pdp-info{position:sticky;top:92px}
+}
+
+/* ---- 圖片區：手機 3:4（原圖 2:3 上下各裁一點），桌機維持完整 2:3 ---- */
+.gallery .main{aspect-ratio:3/4;position:relative;overflow:hidden}
+@media(min-width:1080px){.gallery .main{aspect-ratio:2/3}}
+.g-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.g-track::-webkit-scrollbar{display:none}
+.g-slide{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:start}
+.g-slide .ph{height:100%}
+/* 換頁指示：極簡白點，貼近圖片底部、不搶視覺 */
+.g-dots{position:absolute;left:0;right:0;bottom:11px;z-index:3;
+  display:flex;justify-content:center;align-items:center;gap:6px;pointer-events:none}
+.g-dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);
+  box-shadow:0 0 3px rgba(0,0,0,.18);
+  transition:background var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.g-dots i.on{background:rgba(255,255,255,.98);transform:scale(1.2)}
+@media(min-width:1080px){.g-dots{bottom:14px}}
+@media(max-width:1079px){
+  .thumbs{display:none} /* 手機不放縮圖列，滑動看圖＋白點 */
+}
+/* 手機：照片滿版貼齊螢幕邊，從第一個像素開始 */
+.gallery{display:flex;flex-direction:column}
+.gallery .main{align-self:center;width:100%;margin:0 calc(-1 * var(--edge));
+  width:calc(100% + var(--edge) * 2);border-radius:0}
+@media(min-width:720px){
+  .gallery .main{margin:0;width:100%;border-radius:var(--r-sm)}
+}
+/* 註：不要用 max-height 的斷點來收圖片。Safari 的網址列展開／收合會改變視窗高度，
+   斷點會在捲動途中跳掉，畫面就會從縮小的圖突然變成滿版。滿版永遠是滿版。 */
+/* 返回：壓在主圖左上角，不另外開一行標頭。桌機有麵包屑，不顯示 */
+.back-fab{position:absolute;top:12px;left:12px;z-index:3;
+  width:36px;height:36px;border-radius:50%;padding:0;
+  background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.08);color:var(--c-ink);
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);box-shadow:0 1px 4px rgba(0,0,0,.08);
+  transition:background var(--dur) var(--ease)}
+.back-fab:hover{background:#fff}
+.back-fab svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.6;fill:none}
+@media(min-width:1080px){.back-fab{display:none}}
+/* 整套買：主圖左下角常駐入口，第一眼就看得到 */
+/* 整套買：改為與熱點同語言的細緻白膠囊 */
+.look-pill{position:absolute;left:12px;bottom:16px;z-index:3;display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;background:rgba(255,255,255,.92);color:var(--c-ink);
+  border:1px solid rgba(0,0,0,.08);border-radius:100px;
+  font-size:12px;letter-spacing:.08em;backdrop-filter:blur(4px);
+  box-shadow:0 1px 4px rgba(0,0,0,.08);transition:background var(--dur) var(--ease)}
+.look-pill:hover{background:#fff}
+.look-pill svg{width:13px;height:13px;stroke:var(--c-ink);stroke-width:1.5;fill:none}
+/* 省下金額：張力放在數字，不靠紅字 */
+.look-pill .sv{font-family:var(--f-num);font-weight:600;letter-spacing:.01em;margin-left:1px}
+/* 分隔用 CSS 畫的小圓點：全形「・」本身就佔 12.7px，左右留白關不掉 */
+.look-pill .sep{display:inline-block;width:2.5px;height:2.5px;border-radius:50%;
+  background:var(--c-line-2);vertical-align:middle;margin:0 4px;position:relative;top:-1px}
+/* 中文字距不外溢到數字前，避免「省」與「$」之間出現空洞 */
+.look-pill .txt{letter-spacing:.04em}
+.look-pill .txt .cjk{margin-right:-.04em}
+.thumbs{display:flex;gap:var(--s2);margin-top:8px;overflow-x:auto;padding-bottom:2px}
+.thumbs .t{flex:none;width:64px;aspect-ratio:2/3;border-radius:var(--r-sm);border:1px solid transparent;
+  padding:0;background:none;overflow:hidden;transition:border-color var(--dur) var(--ease)}
+.thumbs .t .ph{display:block;width:100%;height:100%}
+.thumbs .t .ph::after{content:""}
+.thumbs .t.on{border-color:var(--c-ink)}
+@media(max-width:1079px){.thumbs{display:none}}
+
+/* ---- 商品資訊 ---- */
+.p-tagline{display:flex;align-items:center;gap:10px;font-size:11.5px}
+@media(min-width:1080px){.p-tagline{gap:var(--s3);font-size:12.5px}}
+.mini-acts{margin-left:auto;display:flex;gap:2px}
+.ma{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--c-ink-2);padding:0}
+.ma svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.5;fill:none}
+.ma.on{color:var(--c-sale)}
+.ma.on svg{fill:var(--c-sale);stroke:var(--c-sale)}
+.tag{padding:3px 10px;font-size:11.5px;letter-spacing:.06em;background:var(--c-brand);color:#fff;border-radius:var(--r-sm)}
+.p-tagline .dl{color:var(--c-brand-ink)}
+.p-tagline .dl b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums}
+/* 手機：名稱與價格都收小一級，讓「名稱＋價格＋出貨」一眼全進第一屏 */
+.p-name{font-family:var(--f-title);font-size:17px;letter-spacing:.03em;margin-top:2px;line-height:1.35}
+@media(min-width:1080px){.p-name{font-size:26px;letter-spacing:.06em;margin-top:4px;line-height:1.3}}
+.p-price{display:flex;align-items:baseline;gap:10px;margin-top:1px}
+.p-price .sale{font-family:var(--f-num);font-size:20px;font-weight:600;color:var(--c-sale);font-variant-numeric:tabular-nums}
+.p-price s{font-family:var(--f-num);font-size:13px;color:var(--c-ink-3);font-variant-numeric:tabular-nums}
+.p-price .label{font-size:11px;color:var(--c-ink-3)}
+@media(min-width:1080px){
+  .p-price{gap:var(--s3);margin-top:2px}
+  .p-price .sale{font-size:24px}
+  .p-price s{font-size:15px}
+  .p-price .label{font-size:12px}
+}
+/* 優惠與出貨資訊：簡化為一行安靜小字 */
+.p-ship{margin-top:3px;font-size:11.5px;color:var(--c-ink-3);line-height:1.5}
+@media(min-width:1080px){.p-ship{margin-top:4px;font-size:12.5px;line-height:1.55}}
+.p-ship b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
+.nb{white-space:nowrap}
+
+/* ---- 選項 ---- */
+.opt{margin-top:var(--s3)}
+.opt-h{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:6px}
+.opt-h h3{font-size:13.5px;font-weight:500;color:var(--c-ink-2)}
+.opt-h .picked{font-size:13px;color:var(--c-ink)}
+.swatches{display:flex;gap:10px}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:2px;
+  font-size:12px;color:var(--c-ink-2)}
+.swatch i{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+.swatch.on i{outline:2px solid var(--c-ink);outline-offset:2px}
+.swatch.on{color:var(--c-ink)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chip{min-width:52px;height:var(--h-btn-3);padding:0 var(--s4);background:var(--c-surface);border:1px solid var(--c-line-2);
+  border-radius:var(--r-sm);font-size:14px;font-family:var(--f-num);color:var(--c-ink);
+  transition:all var(--dur) var(--ease)}
+.chip:hover{border-color:var(--c-ink)}
+.chip.on{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.chip.sold{color:var(--c-line-2);text-decoration:line-through;background:var(--c-bg);pointer-events:none}
+.sold-note{margin-top:4px;font-size:12.5px;color:var(--c-ink-3)}
+.sold-note button{background:none;border:0;padding:0;font-size:12.5px;color:var(--c-ink-2);
+  border-bottom:1px solid var(--c-line-2)}
+
+/* ---- 桌機加入購物車 ---- */
+.buy-desk{display:none}
+@media(min-width:1080px){
+  .buy-desk{display:flex;gap:var(--s3);margin-top:var(--s4)}
+  .buy-desk .add{flex:1;height:var(--h-btn);background:var(--c-action);color:var(--c-action-on);
+    border:1px solid var(--c-action);border-radius:var(--r-sm);font-size:15px;letter-spacing:.12em;
+    transition:opacity var(--dur) var(--ease)}
+  .buy-desk .add:hover{opacity:.85}
+  .buy-desk .fav{width:var(--h-btn);height:var(--h-btn);background:none;border:1px solid var(--c-line-2);
+    border-radius:var(--r-sm);color:var(--c-ink-2);font-size:18px;transition:border-color var(--dur) var(--ease)}
+  .buy-desk .fav:hover{border-color:var(--c-ink);color:var(--c-ink)}
+}
+
+
+/* ---- 手風琴 ---- */
+.acc{margin-top:var(--s4);border-top:1px solid var(--c-line)}
+.acc-item{border-bottom:1px solid var(--c-line)}
+.acc-hd{width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;background:none;border:0;font-size:14.5px;color:var(--c-ink);text-align:left}
+.acc-hd .ic{font-family:var(--f-num);font-size:16px;color:var(--c-ink-3);transition:transform var(--dur) var(--ease)}
+.acc-item.open .acc-hd .ic{transform:rotate(45deg)}
+.acc-bd{display:none;padding:0 0 var(--s4);font-size:13.5px;color:var(--c-ink-2);line-height:1.7}
+.acc-item.open .acc-bd{display:block}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px var(--s5);margin:0}
+.kv dt{color:var(--c-ink-3);white-space:nowrap}
+.kv dd{margin:0}
+table.size{width:100%;border-collapse:collapse;font-family:var(--f-num);font-size:13px;margin-top:var(--s2)}
+table.size th,table.size td{border:1px solid var(--c-line);padding:8px 6px;text-align:center;font-weight:400}
+table.size th{background:var(--c-bg);color:var(--c-ink-2);font-family:var(--f-body)}
+.acc-bd .note{margin-top:var(--s2);font-size:12.5px;color:var(--c-ink-3)}
+
+/* ---- 整套穿搭（shop the look）：照片乾淨、熱點輕觸才顯示，一鍵整套帶走 ---- */
+.spot{position:absolute;width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,0,0,.12);
+  background:rgba(255,255,255,.92);backdrop-filter:blur(3px);color:var(--c-ink);
+  display:flex;align-items:center;justify-content:center;padding:0;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);transition:transform var(--dur) var(--ease)}
+.spot i{font-style:normal;font-family:var(--f-num);font-size:15px;line-height:1;transition:transform var(--dur) var(--ease)}
+.spot.on i{transform:rotate(45deg)}
+.spot .pop{position:absolute;top:38px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  background:rgba(31,31,29,.9);color:#fff;font-size:12px;padding:6px 12px;border-radius:var(--r-sm);
+  display:none;z-index:2}
+.spot .pop b{font-family:var(--f-num);font-weight:500;margin-left:6px}
+.spot.on .pop{display:block}
+.spot.flip .pop{top:auto;bottom:38px}
+/* 熱點預設不出現，點了整套買才浮上來，第一眼把照片完整還給商品 */
+.spot{display:none;opacity:0;transition:opacity var(--dur) var(--ease)}
+.main.reveal .spot{display:flex;opacity:1}
+/* 純 CSS 開關：預覽器不執行 JS 也能操作 */
+#lookOpen:checked + .modal{display:block}
+.sp:checked + .spot .pop{display:block}
+.sp:checked + .spot i{transform:rotate(45deg)}
+.lk-sizes .chip{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.lk-sizes .chip:has(input:checked){background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+/* 整套尺寸選擇卡 */
+.lk-note{font-size:12.5px;color:var(--c-ink-2);margin:-4px 0 var(--s3)}
+.lk-note b{font-family:var(--f-num);font-weight:600;color:var(--c-sale)}
+.lk-note s{font-family:var(--f-num);color:var(--c-ink);margin-left:6px;font-size:12px}
+.lk-item{padding:var(--s3) 0;border-bottom:1px solid var(--c-line)}
+.lk-item .nm{font-size:14px;margin-bottom:8px}
+.lk-item .nm b{font-family:var(--f-num);font-weight:500;color:var(--c-sale);margin-left:8px}
+.lk-sizes{display:flex;gap:var(--s2)}
+.lk-sizes .chip{min-width:46px;height:40px}
+.lk-cta{width:100%;height:var(--h-btn-2);margin-top:var(--s4);background:var(--c-action);color:var(--c-action-on);
+  border:1px solid var(--c-action);border-radius:var(--r-sm);font-size:14.5px;letter-spacing:.08em}
+
+/* ---- 推薦：橫向滑軌＋卡上直接加入（韓貨無尺寸，加購一下完成） ---- */
+/* 手機用留白分段就好，不再畫線（上面手風琴已經有一條收尾線，兩條會很吵） */
+.rec{margin-top:var(--s7)}
+@media(min-width:1080px){
+  .rec{margin-top:var(--s8);padding-top:var(--s6);border-top:1px solid var(--c-line)}
+}
+.rec-h{margin-bottom:var(--s4)}
+.rec-h h2{font-family:var(--f-title);font-size:20px;letter-spacing:.1em}
+.rec-h .sub{font-size:12.5px;color:var(--c-ink-3);margin-top:4px}
+/* 不做滿版出血：滑軌左緣永遠對齊版心，跟下面的區塊切齊 */
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding:0 0 4px}
+.rail::-webkit-scrollbar{display:none}
+/* 桌機沒有觸控，滑軌要有箭頭才滑得動；手機用手指滑，不顯示 */
+.rail-wrap{position:relative}
+.rail-nav{display:none}
+@media(min-width:1080px){
+  .rail-nav{position:absolute;top:calc(50% - 28px);transform:translateY(-50%);z-index:2;
+    width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.94);
+    border:1px solid var(--c-line-2);color:var(--c-ink);
+    display:flex;align-items:center;justify-content:center;padding:0;
+    box-shadow:0 1px 6px rgba(0,0,0,.10);
+    transition:opacity var(--dur) var(--ease),background var(--dur) var(--ease)}
+  .rail-nav:hover{background:#fff}
+  .rail-nav svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.6;fill:none}
+  .rail-nav.prev{left:-8px}
+  .rail-nav.next{right:-8px}
+  .rail-nav[disabled]{opacity:0;pointer-events:none}
+}
+.card{display:block;position:relative;flex:0 0 45%;scroll-snap-align:start}
+@media(min-width:720px){.card{flex-basis:30%}}
+@media(min-width:1080px){.card{flex-basis:22%}}
+.card .ph{aspect-ratio:2/3;margin-bottom:10px}
+.card .tag2{position:absolute;top:10px;left:10px;padding:3px 9px;font-size:11px;letter-spacing:.06em;
+  background:var(--c-brand);color:#fff;border-radius:var(--r-sm)}
+.card .nm{font-size:13.5px;line-height:1.6}
+.card .pr{font-family:var(--f-num);font-size:14.5px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
+.card .pr .sale{color:var(--c-sale)}
+.card .pr s{color:var(--c-ink-3);font-weight:400;font-size:12.5px;margin-left:5px}
+/* 卡上加入：沒有尺寸要選，看到喜歡就一下 */
+.qadd{position:absolute;right:8px;bottom:calc(50px + 8px);width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.94);border:1px solid rgba(0,0,0,.08);color:var(--c-ink);
+  display:flex;align-items:center;justify-content:center;padding:0;
+  box-shadow:0 1px 4px rgba(0,0,0,.10);backdrop-filter:blur(4px);
+  transition:transform var(--dur) var(--ease),background var(--dur) var(--ease)}
+.qadd svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;fill:none}
+.qadd:active{transform:scale(.92)}
+.qadd.done{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.dots{display:flex;gap:5px;margin-top:6px}
+.dots i{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.12)}
+.more{display:block;margin-top:var(--s5);height:var(--h-btn-3);line-height:var(--h-btn-3);text-align:center;
+  border:1px solid var(--c-line-2);border-radius:var(--r-sm);font-size:13.5px;color:var(--c-ink-2);
+  transition:border-color var(--dur) var(--ease)}
+.more:hover{border-color:var(--c-ink);color:var(--c-ink)}
+/* 滑到最後一張＝直接接本期新品：不畫框，用一塊安靜的暖色收尾 */
+/* 寬度跟商品卡一致，色塊高度才會跟照片切齊 */
+.tail{flex:0 0 45%;scroll-snap-align:start;align-self:flex-start}
+.tail .in{aspect-ratio:2/3;border-radius:var(--r-sm);background:var(--c-brand-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+  text-align:center;line-height:1.5;transition:background var(--dur) var(--ease)}
+.tail:hover .in{background:#EFE6E1}
+.tail .ar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.75);
+  display:flex;align-items:center;justify-content:center;color:var(--c-brand-ink)}
+.tail .ar svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.6;fill:none}
+.tail .tx{font-size:12.5px;color:var(--c-brand-ink);letter-spacing:.04em}
+.tail .n2{font-family:var(--f-num);font-size:11px;color:var(--c-ink-3);margin-top:-4px}
+@media(min-width:720px){.tail{flex-basis:30%}}
+@media(min-width:1080px){.tail{flex-basis:22%}}
+
+/* ---- 加入購物車後的小卡：那一秒是防備最低的時候 ---- */
+.as{position:fixed;inset:0;z-index:55;display:none}
+.as.open{display:block}
+.as .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.as .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--c-surface);
+  border-radius:var(--r-md) var(--r-md) 0 0;padding:var(--s5) var(--edge) calc(var(--s4) + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 30px rgba(0,0,0,.10);max-width:var(--max-w);margin:0 auto}
+@media(min-width:1080px){.as .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);
+  width:440px;border-radius:var(--r-md)}}
+.as .ok{display:flex;align-items:center;gap:7px;font-size:14px;margin-bottom:var(--s4)}
+.as .ok svg{width:17px;height:17px;stroke:var(--c-ok);stroke-width:2;fill:none}
+.as .got{display:flex;gap:var(--s3);align-items:center;padding-bottom:var(--s4);border-bottom:1px solid var(--c-line)}
+.as .got .ph{width:52px;aspect-ratio:2/3;flex:none}
+.as .got .nm{font-size:13.5px;line-height:1.5}
+.as .got .pr{font-family:var(--f-num);font-size:13.5px;color:var(--c-sale);margin-top:2px}
+.as .sub{font-size:13px;color:var(--c-ink-2);margin:var(--s4) 0 10px}
+.as .mini{display:flex;gap:10px}
+.as .mini .card{flex:1;scroll-snap-align:none}
+.as .acts{display:flex;gap:var(--s2);margin-top:var(--s5)}
+.as .acts button,.as .acts a{flex:1;height:var(--h-btn-2);border-radius:var(--r-sm);font-size:14px;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.06em}
+.as .keep{background:none;border:1px solid var(--c-line-2);color:var(--c-ink-2)}
+.as .pay{background:var(--c-action);border:1px solid var(--c-action);color:var(--c-action-on)}
+
+/* ---- 手機黏底 CTA ---- */
+.buybar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(250,250,248,.97);
+  backdrop-filter:blur(8px);border-top:1px solid var(--c-line);
+  padding:11px var(--edge) calc(11px + env(safe-area-inset-bottom))}
+.buybar-in{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;gap:var(--s3)}
+.bb-ic{position:relative;height:44px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;font-size:10px;color:var(--c-ink-3);letter-spacing:.04em;
+  transition:color var(--dur) var(--ease)}
+.bb-ic:hover{color:var(--c-ink)}
+.bb-ic svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.4;fill:none}
+.bb-ic.on svg{fill:var(--c-brand);stroke:var(--c-brand)}
+.bb-ic .n{position:absolute;top:-1px;right:-7px;min-width:13px;height:13px;border-radius:7px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:8.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 3.5px}
+.buybar .add{flex:1;height:var(--h-btn-2);margin-left:6px;background:var(--c-action);color:var(--c-action-on);
+  border:1px solid var(--c-action);border-radius:var(--r-sm);font-size:14px;letter-spacing:.16em;
+  text-indent:.16em;display:flex;align-items:center;justify-content:center;gap:9px}
+/* 按下去前再確認一次顏色，代購改單很麻煩 */
+.buybar .add .cdot{width:11px;height:11px;border-radius:50%;border:1px solid rgba(255,255,255,.5);flex:none}
+@media(min-width:1080px){.buybar{display:none}}
+
+/* ---- 加入確認：不用黑框蓋畫面，改成貼在購物車上方的一顆白膠囊 ---- */
+.toast{position:fixed;left:var(--edge);bottom:calc(88px + env(safe-area-inset-bottom));z-index:60;
+  display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 15px;border-radius:100px;
+  background:rgba(255,255,255,.96);color:var(--c-ink);border:1px solid rgba(0,0,0,.07);
+  box-shadow:0 2px 12px rgba(0,0,0,.10);backdrop-filter:blur(6px);
+  font-size:12.5px;letter-spacing:.06em;white-space:nowrap;
+  opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast svg{width:14px;height:14px;stroke:var(--c-ok);stroke-width:2;fill:none;flex:none}
+@media(min-width:1080px){.toast{bottom:28px}}
+
+/* ---- 尺寸表彈窗 ---- */
+.modal{position:fixed;inset:0;z-index:50;display:none}
+.modal.open{display:block}
+.modal .mask{display:block;position:absolute;inset:0;background:rgba(31,31,29,.4)}
+.modal .box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(480px,92vw);max-height:84vh;overflow-y:auto;background:var(--c-surface);
+  border-radius:var(--r-md);padding:var(--s5);box-shadow:var(--shadow-soft)}
+.modal .box h3{font-family:var(--f-title);font-size:17px;letter-spacing:.12em;margin-bottom:var(--s3)}
+.modal .close{position:absolute;top:10px;right:10px;width:44px;height:44px;background:none;border:0;
+  font-size:18px;color:var(--c-ink-2)}
+
+/* ---- 頁尾 ---- */
+footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s6) 0;margin-top:var(--s8)}
+@media(max-width:1079px){footer{display:none}}
+.copy{font-size:12px;color:var(--c-ink-3);display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);justify-content:center}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<noscript><div style="background:#FCEFEE;color:#C0392B;font-size:13px;line-height:1.7;padding:10px 16px;text-align:center">這個預覽視窗沒有執行程式，倒數與購物車不會動；請用瀏覽器（Safari/Chrome）開啟檔案看完整效果</div></noscript>
+
+<div class="notice"><span class="n-long">連線期進行中｜滿 <b>NT$3,000</b> 免運・回饋金加碼｜</span><span class="n-short">連線優惠中・</span>倒數 <b class="cd" data-deadline="2026-08-16T23:59:59+08:00">--:--:--</b></div>
+
+<header>
+  <div class="wrap hd">
+    <button class="burger" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="#">BACKSTAGE</a>
+    <nav class="main">
+      <a class="hot" href="#">本週連線</a>
+      <a href="#">新品上架</a>
+      <a href="#">上衣</a>
+      <a href="#">洋裝</a>
+      <a href="#">褲・裙</a>
+      <a href="#">外套</a>
+      <a href="#">飾品配件</a>
+    </nav>
+    <div class="hd-icons">
+      <div class="search-inline">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="search" placeholder="搜尋：書華、垂墜寬褲…">
+      </div>
+      <button class="icon-btn srch" aria-label="搜尋" onclick="var r=document.getElementById('searchRow');r.classList.toggle('open');if(r.classList.contains('open'))r.querySelector('input').focus()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+      <button class="icon-btn member" aria-label="會員"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
+      <button class="icon-btn" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n" id="cartN">2</span></button>
+    </div>
+  </div>
+  <div class="wrap search-row" id="searchRow">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" placeholder="搜尋商品：書華、垂墜寬褲…">
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <div class="mask" onclick="document.getElementById('drawer').classList.remove('open')"></div>
+  <div class="panel">
+    <a href="#" style="color:var(--c-brand-ink)">本週連線</a>
+    <a href="#">新品上架</a>
+    <a href="#">上衣</a>
+    <a href="#">洋裝</a>
+    <a href="#">褲・裙</a>
+    <a href="#">外套</a>
+    <a href="#">飾品配件</a>
+    <p class="sub">會員登入・訂單查詢・購物說明</p>
+    <p class="sub" style="font-size:11px;opacity:.45;margin-top:12px">原型版本 v13・08/14 14:35</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="crumb"><a href="#">首頁</a>｜<a href="#">本週連線</a>｜垂墜感西裝寬褲</p>
+
+  <div class="pdp">
+
+    <!-- 圖片區 -->
+    <div class="gallery">
+      <div class="main" id="mainWrap">
+        <div class="g-track" id="gTrack">
+          <div class="g-slide">
+            <div class="ph"></div>
+            <input type="checkbox" class="sp" id="sp1" hidden><label class="spot" for="sp1" style="top:26%;left:58%"><i>＋</i><span class="pop">雲朵感短版針織外套<b>NT$1,280</b></span></label>
+            <input type="checkbox" class="sp" id="sp2" hidden><label class="spot" for="sp2" style="top:45%;left:36%"><i>＋</i><span class="pop">法式方領棉質上衣<b>NT$880</b></span></label>
+            <input type="checkbox" class="sp" id="sp3" hidden><label class="spot flip" for="sp3" style="top:70%;left:52%"><i>＋</i><span class="pop">垂墜感西裝寬褲<b>NT$1,480</b></span></label>
+          </div>
+          <div class="g-slide"><div class="ph" style="filter:brightness(.96)"></div></div>
+          <div class="g-slide"><div class="ph" style="filter:brightness(.92)"></div></div>
+          <div class="g-slide"><div class="ph" style="filter:brightness(.88)"></div></div>
+          <div class="g-slide"><div class="ph" style="filter:brightness(.84)"></div></div>
+          <div class="g-slide"><div class="ph" style="filter:brightness(.8)"></div></div>
+        </div>
+        <button class="back-fab" type="button" aria-label="返回" onclick="history.back()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="look-pill" id="lookPill" onclick="lookStep()"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="txt" id="lookTxt">整套買<span class="sep"></span><span class="cjk">省</span><span class="sv">$900</span></span></button>
+        <div class="g-dots" id="gDots" aria-hidden="true">
+          <i class="on"></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="thumbs">
+        <button class="t on" onclick="pickThumb(this,0)"><span class="ph"></span></button>
+        <button class="t" onclick="pickThumb(this,1)"><span class="ph" style="filter:brightness(.96)"></span></button>
+        <button class="t" onclick="pickThumb(this,2)"><span class="ph" style="filter:brightness(.92)"></span></button>
+        <button class="t" onclick="pickThumb(this,3)"><span class="ph" style="filter:brightness(.88)"></span></button>
+        <button class="t" onclick="pickThumb(this,4)"><span class="ph" style="filter:brightness(.84)"></span></button>
+        <button class="t" onclick="pickThumb(this,5)"><span class="ph" style="filter:brightness(.8)"></span></button>
+      </div>
+    </div>
+
+    <!-- 資訊區 -->
+    <div class="pdp-info">
+      <div class="p-tagline">
+        <span class="tag">連線</span>
+        <span class="dl">本期收單倒數 <b class="cd" data-deadline="2026-08-16T23:59:59+08:00">--:--:--</b></span>
+        <span class="mini-acts">
+          <button class="ma" aria-label="收藏" onclick="this.classList.toggle('on')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
+          <button class="ma" aria-label="分享"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="17" cy="6" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M8.2 10.8l6.6-3.6M8.2 13.2l6.6 3.6"/></svg></button>
+        </span>
+      </div>
+      <h1 class="p-name">垂墜感西裝寬褲（附綁帶）</h1>
+      <div class="p-price">
+        <span class="sale">NT$1,480</span>
+        <s>NT$1,880</s>
+        <span class="label">紅字為連線價</span>
+      </div>
+      <p class="p-ship">韓國代購・<span class="nb">下單後 <b>7–30</b> 天內出貨</span>・<span class="nb">連線期結束恢復原價</span></p>
+
+      <div class="opt">
+        <div class="opt-h"><h3>顏色</h3><span class="picked" id="pickedColor">奶茶</span></div>
+        <div class="swatches">
+          <button class="swatch on" onclick="pickColor(this,'奶茶')"><i style="background:#C8BAA8"></i>奶茶</button>
+          <button class="swatch" onclick="pickColor(this,'黑')"><i style="background:#3B3B3B"></i>黑</button>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="opt-h">
+          <h3>尺寸</h3><span class="picked" id="pickedSize">未選</span>
+        </div>
+        <div class="chips">
+          <button class="chip" onclick="pickSize(this,'S')">S</button>
+          <button class="chip" onclick="pickSize(this,'M')">M</button>
+          <button class="chip sold">L</button>
+        </div>
+        <p class="sold-note">L 本批售完・<button onclick="this.textContent='已登記，補貨會通知你'">補貨通知我</button></p>
+      </div>
+
+
+      <div class="buy-desk">
+        <button class="add" onclick="addCart()">加入購物車</button>
+        <button class="fav" aria-label="加入收藏">♡</button>
+      </div>
+
+
+
+      <div class="acc">
+        <div class="acc-item open">
+          <button class="acc-hd" onclick="this.parentElement.classList.toggle('open')">商品介紹 <span class="ic">＋</span></button>
+          <div class="acc-bd">垂墜感梭織布料，附同布料綁帶，腰間打褶修飾線條。寬版直筒剪裁不挑身形，久坐不易皺，會議與日常都能輕鬆駕馭</div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-hd" onclick="this.parentElement.classList.toggle('open')">商品尺寸 <span class="ic">＋</span></button>
+          <div class="acc-bd">
+            <table class="size">
+              <tr><th>尺寸</th><th>腰圍</th><th>臀圍</th><th>褲長</th></tr>
+              <tr><td>S</td><td>66</td><td>104</td><td>98</td></tr>
+              <tr><td>M</td><td>70</td><td>108</td><td>99</td></tr>
+              <tr><td>L</td><td>74</td><td>112</td><td>100</td></tr>
+            </table>
+            <p class="note">單位 cm・平量誤差 1–3cm 為正常範圍</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-hd" onclick="this.parentElement.classList.toggle('open')">運費與到貨 <span class="ic">＋</span></button>
+          <div class="acc-bd">
+            <dl class="kv">
+              <dt>7-11 取貨</dt><dd>NT$60</dd>
+              <dt>宅配到府</dt><dd>NT$100</dd>
+              <dt>國際配送</dt><dd>EMS／順豐，運費另計</dd>
+              <dt>免運</dt><dd>連線期滿 NT$3,000</dd>
+              <dt>出貨</dt><dd>全站為韓國代購，收到訂單後向韓國訂購，約 7–30 天內完成出貨</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-hd" onclick="this.parentElement.classList.toggle('open')">下單前提醒 <span class="ic">＋</span></button>
+          <div class="acc-bd">
+            <p>本站商品為委託海外代購，屬客製化給付，依法不適用七天鑑賞期；代購商品恕不接受試用，或因個人主觀因素退換貨</p>
+            <p style="margin-top:8px">追加訂購需 1–2 週，下單前請務必確認尺寸與款式；如有尺寸或款式疑問，歡迎先加入官方 LINE 詢問</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 推薦：橫向滑軌，卡上直接加入 -->
+  <div class="rec">
+    <div class="rec-h">
+      <h2>猜你會喜歡</h2>
+      <p class="sub">挑了幾款風格很近的，一起逛逛！</p>
+    </div>
+    <div class="rail-wrap">
+    <div class="rail" id="recRail">
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'雲朵感短版針織外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">雲朵感短版針織外套</p>
+        <p class="pr"><span class="sale">NT$1,280</span> <s>NT$1,580</s></p>
+        <div class="dots"><i style="background:#C8BAA8"></i><i style="background:#3B3B3B"></i></div>
+      </div>
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'法式方領棉質上衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">法式方領棉質上衣</p>
+        <p class="pr"><span class="sale">NT$880</span> <s>NT$1,080</s></p>
+        <div class="dots"><i style="background:#F1EDE6"></i><i style="background:#C8BAA8"></i><i style="background:#3B3B3B"></i></div>
+      </div>
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'輕薄防曬襯衫外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">輕薄防曬襯衫外套</p>
+        <p class="pr"><span class="sale">NT$1,080</span> <s>NT$1,380</s></p>
+        <div class="dots"><i style="background:#F1EDE6"></i><i style="background:#B9C3BE"></i></div>
+      </div>
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'微光緞面半身裙')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">微光緞面半身裙</p>
+        <p class="pr"><span class="sale">NT$1,180</span> <s>NT$1,480</s></p>
+        <div class="dots"><i style="background:#C8BAA8"></i><i style="background:#8E9AA6"></i></div>
+      </div>
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'軟糯羊毛混紡圍巾')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">軟糯羊毛混紡圍巾</p>
+        <p class="pr"><span class="sale">NT$680</span> <s>NT$880</s></p>
+        <div class="dots"><i style="background:#EDE3D6"></i><i style="background:#9A8C7C"></i></div>
+      </div>
+      <div class="card">
+        <div class="ph"><span class="tag2">連線</span>
+          <button class="qadd" onclick="qa(this,'落肩感長版大衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">落肩感長版大衣</p>
+        <p class="pr"><span class="sale">NT$2,480</span> <s>NT$2,980</s></p>
+        <div class="dots"><i style="background:#C8BAA8"></i><i style="background:#3B3B3B"></i></div>
+      </div>
+      <a class="tail" href="#">
+        <span class="in">
+          <span class="ar"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+          <span class="tx">回本期新品</span>
+          <span class="n2">還有 26 件</span>
+        </span>
+      </a>
+    </div>
+      <button class="rail-nav prev" type="button" aria-label="上一批" onclick="railGo(-1)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="rail-nav next" type="button" aria-label="下一批" onclick="railGo(1)"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+
+    <a class="more" href="#">回本期新品</a>
+  </div>
+</div>
+
+<!-- 手機黏底：選單＋心儀＋購物車三個出口 ＋ 加入購物車 -->
+<div class="buybar">
+  <div class="buybar-in">
+    <a class="bb-ic" href="#" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open');return false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>選單</a>
+    <a class="bb-ic" href="#" aria-label="心儀清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg><span class="n" id="favN">5</span>心儀</a>
+    <a class="bb-ic" href="#" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n cart-n2" id="cartN2">2</span>購物車</a>
+    <button class="add" onclick="addCart()"><i class="cdot" id="bbDot" style="background:#C8BAA8"></i>加入購物車</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="toastTxt">已加入</span></div>
+
+
+
+<!-- 整套帶走：一次選好三件尺寸（純 CSS 開關，無 JS 也可操作） -->
+<input type="checkbox" id="lookOpen" hidden>
+<div class="modal" id="lookSheet">
+  <label class="mask" for="lookOpen"></label>
+  <div class="box">
+    <label class="close" for="lookOpen" style="display:flex;align-items:center;justify-content:center">✕</label>
+    <h3>整套穿搭・一次帶走</h3>
+    <p class="lk-note">整套連線價 <b>NT$3,640</b><s>NT$4,540</s>・已達滿 3,000 免運＋100元 回饋金</p>
+    <div class="lk-item">
+      <p class="nm">垂墜感西裝寬褲<b>NT$1,480</b></p>
+      <div class="lk-sizes">
+        <label class="chip"><input type="radio" name="lkA" hidden>S</label>
+        <label class="chip"><input type="radio" name="lkA" hidden>M</label>
+        <span class="chip sold">L</span>
+      </div>
+    </div>
+    <div class="lk-item">
+      <p class="nm">雲朵感短版針織外套<b>NT$1,280</b></p>
+      <div class="lk-sizes">
+        <label class="chip"><input type="radio" name="lkB" hidden>F（均碼）</label>
+      </div>
+    </div>
+    <div class="lk-item">
+      <p class="nm">法式方領棉質上衣<b>NT$880</b></p>
+      <div class="lk-sizes">
+        <label class="chip"><input type="radio" name="lkC" hidden>S</label>
+        <label class="chip"><input type="radio" name="lkC" hidden>M</label>
+        <label class="chip"><input type="radio" name="lkC" hidden>L</label>
+      </div>
+    </div>
+    <button class="lk-cta" onclick="addLook()">三件一起帶走　NT$3,640</button>
+  </div>
+</div>
+
+<!-- 加入購物車後：不只跳 toast，順手接兩件可以直接加的 -->
+<div class="as" id="addSheet">
+  <div class="mask" onclick="closeAS()"></div>
+  <div class="sheet">
+    <p class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>已加入購物車</p>
+    <div class="got">
+      <div class="ph"></div>
+      <div>
+        <p class="nm">垂墜感西裝寬褲（附綁帶）　<span id="asColor">奶茶</span></p>
+        <p class="pr">NT$1,480</p>
+      </div>
+    </div>
+    <p class="sub">這兩件我會跟它一起穿</p>
+    <div class="mini">
+      <div class="card">
+        <div class="ph"><button class="qadd" onclick="qa(this,'雲朵感短版針織外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">雲朵感短版針織外套</p>
+        <p class="pr"><span class="sale">NT$1,280</span></p>
+      </div>
+      <div class="card">
+        <div class="ph"><button class="qadd" onclick="qa(this,'法式方領棉質上衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <p class="nm">法式方領棉質上衣</p>
+        <p class="pr"><span class="sale">NT$880</span></p>
+      </div>
+    </div>
+    <div class="acts">
+      <button class="keep" onclick="closeAS()">繼續逛</button>
+      <a class="pay" href="#">去結帳</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap copy">
+    <span>© 2026 BACKSTAGE</span><span>仰揚有限公司</span><span>連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</span>
+  </div>
+</footer>
+
+<script>
+/* 連線期倒數：改 data-deadline 即可換期 */
+(function(){
+  var els=document.querySelectorAll('.cd');if(!els.length)return;
+  function pad(n){return n<10?'0'+n:n}
+  function tick(){
+    els.forEach(function(el){
+      var end=new Date(el.dataset.deadline).getTime(),d=end-Date.now();
+      if(d<=0){el.textContent='本期已收單';return}
+      var day=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),
+          m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);
+      el.textContent=(day>0?day+' 天 ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+    });
+  }
+  tick();setInterval(tick,1000);
+})();
+
+/* 縮圖切換主圖（DEMO 用明暗模擬不同角度） */
+function pickThumb(btn,i){
+  var tr=document.getElementById('gTrack');
+  tr.scrollTo({left:tr.clientWidth*i,behavior:'smooth'});
+}
+(function(){
+  var tr=document.getElementById('gTrack');if(!tr)return;
+  var dots=document.querySelectorAll('#gDots i');
+  tr.addEventListener('scroll',function(){
+    var i=Math.round(tr.scrollLeft/tr.clientWidth);
+    dots.forEach(function(d,k){d.classList.toggle('on',k===i)});
+    document.querySelectorAll('.thumbs .t').forEach(function(t,k){t.classList.toggle('on',k===i)});
+  },{passive:true});
+})();
+function pickColor(btn,name){
+  document.querySelectorAll('.swatches .swatch').forEach(function(s){s.classList.remove('on')});
+  btn.classList.add('on');
+  document.getElementById('pickedColor').textContent=name;
+  var d=document.getElementById('bbDot'),sw=btn.querySelector('i');
+  if(d&&sw)d.style.background=getComputedStyle(sw).backgroundColor;
+  var ac=document.getElementById('asColor');if(ac)ac.textContent=name;
+}
+/* 卡上直接加入：韓貨無尺寸，一下完成 */
+function bump(){
+  [document.getElementById('cartN'),document.getElementById('cartN2')].forEach(function(n){
+    n.textContent=parseInt(n.textContent)+1;
+    n.classList.add('bump');setTimeout(function(){n.classList.remove('bump')},250);
+  });
+}
+/* 提示膠囊：只說結果，不重複商品名（畫面上已經打勾了） */
+function toast(msg,ms){
+  var t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg||'已加入';
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt=setTimeout(function(){t.classList.remove('show')},ms||1500);
+}
+function qa(btn,name){
+  if(btn.classList.contains('done'))return;
+  btn.classList.add('done');
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  bump();
+  toast('已加入');
+}
+function closeAS(){document.getElementById('addSheet').classList.remove('open')}
+/* 整套買兩段式：先讓熱點浮現看清楚是哪三件，再點才開選購卡 */
+function lookStep(){
+  var w=document.getElementById('mainWrap');
+  if(!w.classList.contains('reveal')){
+    w.classList.add('reveal');
+    document.getElementById('lookTxt').innerHTML='一次帶走 <span class="sv">3 件</span>';
+    return;
+  }
+  document.getElementById('lookOpen').checked=true;
+}
+function pickSize(btn,name){
+  document.querySelectorAll('.chips .chip').forEach(function(c){c.classList.remove('on')});
+  btn.classList.add('on');
+  document.getElementById('pickedSize').textContent=name;
+}
+/* 整套穿搭：整套帶走（開關與尺寸選擇為純 CSS，此處只負責加入購物車） */
+function addLook(){
+  var groups=document.querySelectorAll('#lookSheet .lk-sizes');
+  var ok=true;
+  groups.forEach(function(g){if(!g.querySelector('input:checked'))ok=false});
+  if(!ok){toast('每一件都選一下尺寸');return}
+  document.getElementById('lookOpen').checked=false;
+  [document.getElementById('cartN'),document.getElementById('cartN2')].forEach(function(n){
+    n.textContent=parseInt(n.textContent)+3;
+    n.classList.add('bump');setTimeout(function(){n.classList.remove('bump')},250);
+  });
+  toast('整套已加入');
+}
+/* 桌機滑軌箭頭：滑到頭或滑到底就淡出 */
+function railGo(dir){
+  var r=document.getElementById('recRail');
+  r.scrollBy({left:dir*Math.round(r.clientWidth*.8),behavior:'smooth'});
+}
+(function(){
+  var r=document.getElementById('recRail');if(!r)return;
+  var prev=document.querySelector('.rail-nav.prev'),next=document.querySelector('.rail-nav.next');
+  function mark(){
+    var max=r.scrollWidth-r.clientWidth;
+    prev.disabled=r.scrollLeft<=2;
+    next.disabled=r.scrollLeft>=max-2;
+  }
+  r.addEventListener('scroll',mark,{passive:true});
+  window.addEventListener('resize',mark);
+  mark();
+})();
+/* 加入購物車：不跳頁，升起小卡＋順手接兩件 */
+function addCart(){
+  if(document.getElementById('pickedSize').textContent==='未選'){
+    toast('先選一下尺寸');
+    return;
+  }
+  bump();
+  document.getElementById('addSheet').classList.add('open');
+}
+</script>
+</body>
+</html>
