@@ -11,9 +11,8 @@
 <style>
 /* ============================================================
    BACKSTAGE 商品列表頁 · 風格 A「暖白畫廊」
-   規則（洋 8/17 修訂）：列表可快速加入購物車——
-   單色均碼點一下直接加入；多色或有尺寸升起選購小卡；售完不給按鈕
-   完整資訊（平量尺寸、下單前提醒）仍在商品頁，卡片本身照樣可點進去
+   規則（洋 8/17 定案）：列表不放加入購物車——照片、名稱、價格、色點，就這樣
+   全站分工：首頁與列表負責逛，商品頁負責買（整套買、加購小卡都在商品頁）
    商品圖 2:3 零裁切・手機 2 欄同邊距・平板 3 欄・桌機 4 欄
    標籤統一：連線＝棕底白字／現貨＝淺綠底綠字
    售完照樣顯示，給「補貨通知我」
@@ -83,6 +82,7 @@
 }}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
+html,body{overflow-x:clip}
 body{
   background:var(--c-bg);color:var(--c-ink);
   font-family:var(--f-body);font-size:15px;
@@ -191,18 +191,20 @@ nav.main{display:none}
 body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 @media(min-width:1080px){body{padding-bottom:0}}
 
-/* ---- 分類開頭：大標置中、小字置中在下（全站規則）---- */
-.cat-head{padding-top:var(--s5);padding-bottom:var(--s4);text-align:center}
-.crumb{font-size:12.5px;color:var(--c-ink-3);margin-bottom:var(--s2)}
+/* ---- 分類開頭：只留大標（桌機加麵包屑），乾淨 ---- */
+.cat-head{padding-top:var(--s4);padding-bottom:var(--s4);text-align:center}
+.crumb{display:none;font-size:12.5px;color:var(--c-ink-3);margin-bottom:var(--s2)}
+@media(min-width:1080px){.crumb{display:block}}
 .crumb a:hover{color:var(--c-ink)}
 .cat-head h1{font-family:var(--f-title);font-size:var(--fs-h1);letter-spacing:.18em;text-indent:.18em}
-.cat-say{max-width:30em;margin:var(--s2) auto 0;font-size:13px;color:var(--c-ink-3)}
-@media(min-width:1080px){.cat-head{padding-top:var(--s7);padding-bottom:var(--s5)}}
+@media(min-width:1080px){.cat-head{padding-top:var(--s6);padding-bottom:var(--s5)}}
 
-/* ---- 加碼提示：一行安靜小字，不是壓力 ---- */
-.bonus-line{max-width:560px;margin:var(--s3) auto 0;background:var(--c-brand-bg);border-radius:var(--r-sm);
-  padding:9px var(--s4);font-size:12.5px;color:var(--c-brand-ink);text-align:center}
-.bonus-line b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums}
+/* ---- 回饋金：滿版細帶（同首頁優惠列語言），詞組斷行、不會破圖 ---- */
+.perks{background:var(--c-brand-bg);border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line)}
+.perks-in{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
+  gap:2px 12px;padding:8px var(--edge);font-size:12px;color:var(--c-brand-ink);
+  text-align:center;line-height:1.7}
+.perks b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums}
 
 /* ---- 黏頂工具列 ---- */
 .toolbar{position:sticky;top:var(--hd-h);z-index:var(--z-sticky);background:rgba(250,250,248,.96);
@@ -243,54 +245,6 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .color-dots{display:flex;gap:5px;margin-top:7px}
 .color-dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
 .color-dots .more-c{font-size:11px;color:var(--c-ink-3);line-height:1;align-self:center;margin-left:2px}
-
-/* 快速加入：與商品頁推薦滑軌同一顆白圓鈕。
-   單色均碼→點一下直接加入；多色或有尺寸→升起選購小卡 */
-.qadd{position:absolute;right:8px;bottom:8px;z-index:2;width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,.94);border:1px solid rgba(0,0,0,.08);color:var(--c-ink);
-  display:flex;align-items:center;justify-content:center;padding:0;
-  box-shadow:0 1px 4px rgba(0,0,0,.10);backdrop-filter:blur(4px);
-  transition:transform var(--dur) var(--ease),background var(--dur) var(--ease)}
-.qadd svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;fill:none}
-.qadd:active{transform:scale(.92)}
-.qadd.done{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
-
-/* 快速選購小卡：底部升起，選完就走，不跳頁 */
-.qs{position:fixed;inset:0;z-index:var(--z-sheet);display:none}
-.qs.open{display:block}
-.qs .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
-.qs .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--c-surface);
-  border-radius:var(--r-md) var(--r-md) 0 0;padding:var(--s5) var(--edge) calc(var(--s4) + env(safe-area-inset-bottom));
-  box-shadow:0 -8px 30px rgba(0,0,0,.10);max-width:var(--max-w);margin:0 auto}
-@media(min-width:1080px){.qs .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);
-  width:420px;border-radius:var(--r-md)}}
-.qs .head{display:flex;gap:var(--s3);align-items:center;padding-bottom:var(--s4);border-bottom:1px solid var(--c-line)}
-.qs .head .ph{width:52px;aspect-ratio:2/3;flex:none;margin:0}
-.qs .head .nm{font-size:13.5px;line-height:1.5}
-.qs .head .pr{font-family:var(--f-num);font-size:14px;font-weight:600;color:var(--c-sale);margin-top:2px}
-.qs .head .pr s{font-weight:400;font-size:12px;color:var(--c-ink-3);margin-left:5px}
-.qs .grp{margin-top:var(--s4)}
-.qs .grp h4{font-size:13px;font-weight:500;color:var(--c-ink-2);margin:0 0 8px}
-.qs .grp h4 b{font-weight:500;color:var(--c-ink);margin-left:8px}
-.qs .swatches .swatch.on i{outline:2px solid var(--c-ink);outline-offset:2px}
-.qs .swatches .swatch.on{color:var(--c-ink)}
-.qs .chips .chip{min-width:52px;height:var(--h-btn-3);background:var(--c-surface)}
-.qs .chips .chip.on{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
-.qs .go{width:100%;height:var(--h-btn-2);margin-top:var(--s5);background:var(--c-action);
-  color:var(--c-action-on);border:1px solid var(--c-action);border-radius:var(--r-sm);
-  font-size:14.5px;letter-spacing:.08em}
-
-/* 加入確認：白膠囊（同商品頁）*/
-.toast{position:fixed;left:var(--edge);bottom:calc(76px + env(safe-area-inset-bottom));z-index:var(--z-toast);
-  display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 15px;border-radius:var(--r-pill);
-  background:rgba(255,255,255,.96);color:var(--c-ink);border:1px solid rgba(0,0,0,.07);
-  box-shadow:0 2px 12px rgba(0,0,0,.10);backdrop-filter:blur(6px);
-  font-size:12.5px;letter-spacing:.06em;white-space:nowrap;
-  opacity:0;transform:translateY(6px);pointer-events:none;
-  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast svg{width:14px;height:14px;stroke:var(--c-ok);stroke-width:2;fill:none;flex:none}
-@media(min-width:1080px){.toast{bottom:28px}}
 
 /* 售完卡片：照樣顯示，接住補貨需求 */
 .card.sold .ph{opacity:.55}
@@ -383,7 +337,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       </div>
       <button class="icon-btn member" aria-label="收藏清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
       <button class="icon-btn member" aria-label="會員"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
-      <button class="icon-btn" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n" id="cartN">2</span></button>
+      <button class="icon-btn" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n">2</span></button>
     </div>
   </div>
   <div class="wrap search-row">
@@ -411,8 +365,15 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="wrap cat-head">
   <p class="crumb"><a href="#">首頁</a>｜洋裝</p>
   <h1>洋裝</h1>
-  <p class="cat-say">一件出門就好看，洋裝派的救星</p>
-  <p class="bonus-line"><span class="nb">回饋金加碼中・滿 <b>3,000</b>／<b>5,000</b>／<b>8,000</b> 贈 <b>100</b>／<b>300</b>／<b>600</b> 元</span> <span class="nb">8/24（一）23:59 止</span></p>
+</div>
+
+<div class="perks">
+  <div class="perks-in">
+    <span class="nb">回饋金加碼中</span>
+    <span class="nb">滿 <b>3,000</b> 贈 <b>100</b></span>
+    <span class="nb">滿 <b>5,000</b> 贈 <b>300</b></span>
+    <span class="nb">滿 <b>8,000</b> 贈 <b>600</b></span>
+  </div>
 </div>
 
 <div class="toolbar">
@@ -428,37 +389,37 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="wrap list">
   <div class="grid">
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國瑞希拼接蕾絲洋裝" data-colors="米白|#F5F2EA" data-sizes="S,M" data-sale="1600" data-was="1880" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國瑞希拼接蕾絲洋裝</p>
       <p class="pr"><span class="sale">NT$1,600</span> <s>NT$1,880</s></p>
       <div class="color-dots"><i style="background:#F5F2EA"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國采妮波點洋裝（兩色）" data-colors="米白|#F5F2EA,黑|#2E2E2E" data-sizes="F" data-sale="1650" data-was="1880" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國采妮波點洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,650</span> <s>NT$1,880</s></p>
       <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國瑞熙背心洋裝（兩色）" data-colors="黑|#2E2E2E,奶茶|#C8BAA8" data-sizes="F" data-sale="1250" data-was="1480" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國瑞熙背心洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,250</span> <s>NT$1,480</s></p>
       <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#C8BAA8"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國點點細肩小洋裝" data-colors="深藍|#31415E" data-sizes="F" data-sale="980" data-was="1280" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
       <p class="nm">BS韓國點點細肩小洋裝</p>
       <p class="pr"><span class="sale">NT$980</span> <s>NT$1,280</s></p>
       <div class="color-dots"><i style="background:#31415E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國艾莉光澤洋裝（三色）" data-colors="杏裸|#D9C6B8,灰綠|#9DA48E,黑|#2E2E2E" data-sizes="F" data-sale="1500" data-was="1680" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國艾莉光澤洋裝（三色）</p>
       <p class="pr"><span class="sale">NT$1,500</span> <s>NT$1,680</s></p>
       <div class="color-dots"><i style="background:#D9C6B8"></i><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國敏真絲紗洋裝（兩色）" data-colors="黑|#2E2E2E,霧藍|#8A93A4" data-sizes="F" data-sale="1300" data-was="1580" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國敏真絲紗洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,300</span> <s>NT$1,580</s></p>
       <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#8A93A4"></i></div>
@@ -470,31 +431,31 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <button class="notify" onclick="event.preventDefault();this.textContent='已登記，補貨會通知你'">補貨通知我</button>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國腰間打褶長洋裝" data-colors="灰綠|#9DA48E,黑|#2E2E2E" data-sizes="S,M,L" data-sale="1680" data-was="2080" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國腰間打褶長洋裝</p>
       <p class="pr"><span class="sale">NT$1,680</span> <s>NT$2,080</s></p>
       <div class="color-dots"><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國壓褶感傘擺洋裝" data-colors="奶杏|#CDB8A6,墨黑|#22282E" data-sizes="F" data-sale="1580" data-was="1980" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
       <p class="nm">BS韓國壓褶感傘擺洋裝</p>
       <p class="pr"><span class="sale">NT$1,580</span> <s>NT$1,980</s></p>
       <div class="color-dots"><i style="background:#CDB8A6"></i><i style="background:#22282E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國雲霧雪紡長洋裝" data-colors="米白|#EDE9DF,霧藍|#8A93A4" data-sizes="F" data-sale="1780" data-was="2180" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國雲霧雪紡長洋裝</p>
       <p class="pr"><span class="sale">NT$1,780</span> <s>NT$2,180</s></p>
       <div class="color-dots"><i style="background:#EDE9DF"></i><i style="background:#8A93A4"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國方領小香洋裝" data-colors="燕麥|#E5DDD2,黑|#2E2E2E" data-sizes="F" data-sale="1880" data-was="2280" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國方領小香洋裝</p>
       <p class="pr"><span class="sale">NT$1,880</span> <s>NT$2,280</s></p>
       <div class="color-dots"><i style="background:#E5DDD2"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
-      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span><button class="qadd" type="button" aria-label="加入購物車" data-nm="BS韓國荷葉領棉麻洋裝" data-colors="米白|#F5F2EA,灰綠|#9DA48E,奶茶|#C8BAA8,杏裸|#D9C6B8" data-sizes="F" data-sale="1380" data-was="1680" onclick="quickAdd(event,this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國荷葉領棉麻洋裝</p>
       <p class="pr"><span class="sale">NT$1,380</span> <s>NT$1,680</s></p>
       <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#9DA48E"></i><i style="background:#C8BAA8"></i><span class="more-c">+1</span></div>
@@ -557,31 +518,6 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   </div>
 </div>
 
-<!-- 快速選購：多色或有尺寸的商品，從底部升起選完就走 -->
-<div class="qs" id="qs">
-  <div class="mask" onclick="qsClose()"></div>
-  <div class="sheet">
-    <div class="head">
-      <div class="ph"></div>
-      <div>
-        <p class="nm" id="qsNm"></p>
-        <p class="pr" id="qsPr"></p>
-      </div>
-    </div>
-    <div class="grp" id="qsColorGrp">
-      <h4>顏色<b id="qsColorPick"></b></h4>
-      <div class="swatches" id="qsColors"></div>
-    </div>
-    <div class="grp" id="qsSizeGrp">
-      <h4>尺寸<b id="qsSizePick"></b></h4>
-      <div class="chips" id="qsSizes"></div>
-    </div>
-    <button class="go" type="button" id="qsGo" onclick="qsConfirm()">加入購物車</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="toastTxt">已加入</span></div>
-
 <footer>
   <div class="wrap site-copy">
     <span>© 2026 BACKSTAGE</span><span>仰揚有限公司</span><span>連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</span>
@@ -592,7 +528,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9z"/></svg></span>首頁</a>
   <a href="#" class="on" onclick="document.getElementById('drawer').classList.add('open');return false"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>分類</a>
   <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></span>收藏</a>
-  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n" id="cartN2">2</span></span>購物車</a>
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n">2</span></span>購物車</a>
   <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>會員</a>
 </nav>
 
@@ -619,85 +555,6 @@ function nextSort(){
   si=(si+1)%sorts.length;
   document.getElementById('sortBtn').innerHTML='排序：'+sorts[si]+' <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
 }
-/* ===== 快速加入 =====
-   單色均碼：點一下直接加入。多色或有尺寸：升起選購小卡。
-   完整平量尺寸在商品頁，這裡只做「已經想好了」的那群人 */
-var NT=function(n){return 'NT$'+Number(n).toLocaleString('en-US')};
-var qsState={btn:null,color:'',size:''};
-function bump(){
-  [document.getElementById('cartN'),document.getElementById('cartN2')].forEach(function(n){
-    if(n) n.textContent=parseInt(n.textContent)+1;
-  });
-}
-function toast(msg){
-  var t=document.getElementById('toast');
-  document.getElementById('toastTxt').textContent=msg||'已加入';
-  t.classList.add('show');
-  clearTimeout(window._tt);
-  window._tt=setTimeout(function(){t.classList.remove('show')},1500);
-}
-function markDone(btn){
-  btn.classList.add('done');
-  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  setTimeout(function(){
-    btn.classList.remove('done');
-    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
-  },2200);
-}
-function quickAdd(ev,btn){
-  ev.preventDefault(); ev.stopPropagation();
-  var colors=btn.dataset.colors.split(','), sizes=btn.dataset.sizes.split(',');
-  if(colors.length===1 && sizes.length===1 && sizes[0]==='F'){
-    bump(); markDone(btn); toast('已加入');
-    return;
-  }
-  qsOpen(btn,colors,sizes);
-}
-function qsOpen(btn,colors,sizes){
-  qsState={btn:btn,color:'',size:''};
-  document.getElementById('qsNm').textContent=btn.dataset.nm;
-  document.getElementById('qsPr').innerHTML=NT(btn.dataset.sale)+' <s>'+NT(btn.dataset.was)+'</s>';
-  var cg=document.getElementById('qsColorGrp'), cs=document.getElementById('qsColors');
-  if(colors.length>1){
-    cg.hidden=false;
-    cs.innerHTML=colors.map(function(c){
-      var a=c.split('|');
-      return '<button type="button" class="swatch" onclick="qsPick(this,\'color\',\''+a[0]+'\')"><i style="background:'+a[1]+'"></i>'+a[0]+'</button>';
-    }).join('');
-    document.getElementById('qsColorPick').textContent='';
-  }else{
-    cg.hidden=true; qsState.color=colors[0].split('|')[0];
-  }
-  var sg=document.getElementById('qsSizeGrp'), ss=document.getElementById('qsSizes');
-  if(!(sizes.length===1 && sizes[0]==='F')){
-    sg.hidden=false;
-    ss.innerHTML=sizes.map(function(z){
-      return '<button type="button" class="chip" onclick="qsPick(this,\'size\',\''+z+'\')">'+z+'</button>';
-    }).join('');
-    document.getElementById('qsSizePick').textContent='';
-  }else{
-    sg.hidden=true; qsState.size='F';
-  }
-  document.getElementById('qs').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function qsPick(el,kind,val){
-  qsState[kind]=val;
-  var box=el.parentElement;
-  Array.prototype.forEach.call(box.children,function(c){c.classList.remove('on')});
-  el.classList.add('on');
-  document.getElementById(kind==='color'?'qsColorPick':'qsSizePick').textContent=val;
-}
-function qsClose(){
-  document.getElementById('qs').classList.remove('open');
-  document.body.style.overflow='';
-}
-function qsConfirm(){
-  if(!qsState.color){toast('先選一下顏色');return}
-  if(!qsState.size){toast('先選一下尺寸');return}
-  qsClose(); bump(); markDone(qsState.btn); toast('已加入');
-}
-
 /* 篩選數量小紅點 */
 function fTick(){
   var n=document.querySelectorAll('#filter .sel,#filter .switch.on').length;
