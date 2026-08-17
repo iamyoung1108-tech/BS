@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFAF8">
+<title>洋裝｜BACKSTAGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BACKSTAGE 商品列表頁 · 風格 A「暖白畫廊」
+   規則（洋 8/17 定案）：列表不放加入購物車——照片、名稱、價格、色點，就這樣
+   全站分工：首頁與列表負責逛，商品頁負責買（整套買、加購小卡都在商品頁）
+   商品圖 2:3 零裁切・手機 2 欄同邊距・平板 3 欄・桌機 4 欄
+   標籤統一：連線＝棕底白字／現貨＝淺綠底綠字
+   售完照樣顯示，給「補貨通知我」
+   全站 RWD：手機（預設）→ 平板 ≥720px → 桌機 ≥1080px
+   ============================================================ */
+/* ===== BACKSTAGE Design Tokens v1 — 三支檔案共用，勿在單頁另外定義 ===== */
+:root{
+  /* 底與面 */
+  --c-bg:#FAFAF8; --c-surface:#FFFFFF; --c-surface-2:#F6F5F1;
+
+  /* 文字 */
+  --c-ink:#1F1F1D; --c-ink-2:#5A5A56; --c-ink-3:#8B8B85;
+
+  /* 線 */
+  --c-line:#E9E7E2; --c-line-2:#D6D2CB;
+
+  /* 品牌棕 */
+  --c-brand:#A8837C; --c-brand-bg:#F4EEEB; --c-brand-ink:#6B4F49;
+
+  /* 行動 */
+  --c-action:#1F1F1D; --c-action-on:#FFFFFF;
+
+  /* 狀態 */
+  --c-sale:#C0392B; --c-sale-bg:#FCEFEE;
+  --c-err:#C0392B;  --c-err-bg:#FCEFEE;
+  --c-ok:#2E7D4F;   --c-ok-bg:#EDF5F0;
+  --c-warn:#8A6D3B; --c-warn-bg:#FAF4E8;
+
+  /* 字體 */
+  --f-title:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+  --f-body:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-num:"Inter","Noto Sans TC",sans-serif;
+
+  /* 字級 */
+  --fs-hero:29px; --fs-h1:22px; --fs-h2:17px;
+  --fs-body:15px; --fs-sm:13.5px; --fs-xs:12.5px; --fs-2xs:11.5px;
+  --fs-price:20px; --fs-input:16px; /* 輸入框永遠 16，防 iOS 自動放大 */
+
+  /* 行高與字距 */
+  --lh-body:1.8; --lh-tight:1.4; --lh-dense:1.6;
+  --ls-body:.02em; --ls-title:.12em; --ls-mark:.22em;
+
+  /* 間距 */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+
+  /* 圓角與陰影 */
+  --r-sm:2px; --r-md:8px; --r-pill:100px;
+  --shadow-soft:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+
+  /* 按鈕高度 */
+  --h-btn:52px; --h-btn-2:48px; --h-btn-3:44px; --h-btn-mini:36px;
+
+  /* 版心與邊距 */
+  --max-w:1360px; --max-w-flow:1040px; --max-w-form:600px; --edge:12px;
+
+  /* 層級 */
+  --z-raise:10; --z-sticky:20; --z-header:30; --z-bottom:35;
+  --z-drawer:40; --z-modal:50; --z-sheet:55; --z-toast:60; --z-overlay:70;
+
+  /* 動態 */
+  --dur:.2s; --ease:cubic-bezier(.4,0,.2,1);
+}
+@media(min-width:720px){:root{--edge:20px}}
+@media(min-width:1080px){:root{
+  --edge:36px; --fs-hero:48px; --fs-h1:28px; --fs-price:24px;
+}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html,body{overflow-x:clip}
+body{
+  background:var(--c-bg);color:var(--c-ink);
+  font-family:var(--f-body);font-size:15px;
+  line-height:var(--lh-body);letter-spacing:var(--ls-body);
+  font-synthesis:none;font-feature-settings:"palt" 1;line-break:strict;
+  text-spacing-trim:trim-start;text-autospace:normal;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;font-weight:500;line-height:var(--lh-tight);text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 var(--edge)}
+.nb{white-space:nowrap}
+
+/* ---- 商品照占位（正式版換真實商品照，一律 2:3 同原圖 1280x1920 零裁切）---- */
+.ph{position:relative;aspect-ratio:2/3;border-radius:var(--r-sm);overflow:hidden;
+  background:linear-gradient(160deg,#EFEDE8 0%,#E4DFD6 60%,#DAD2C5 100%)}
+.ph::after{content:attr(data-label);position:absolute;inset:auto 0 12px 0;text-align:center;
+  font-size:11px;letter-spacing:.14em;color:#A39B8D}
+
+/* ---- 公告列 ---- */
+.notice{background:var(--c-ink);color:#EDEBE6;font-size:12.5px;text-align:center;
+  padding:9px var(--edge);letter-spacing:.04em}
+.notice b{font-family:var(--f-num);font-weight:500}
+.notice .cd{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.notice .n-short{display:none}
+@media(max-width:719px){.notice .n-long{display:none}.notice .n-short{display:inline}}
+
+/* ---- 頁首（同首頁：手機常駐搜尋列）---- */
+:root{--hd-h:116px}
+@media(min-width:1080px){:root{--hd-h:68px}}
+header{position:sticky;top:0;z-index:var(--z-header);background:rgba(250,250,248,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--c-line)}
+.search-row{padding-top:2px;padding-bottom:10px}
+.search-box{display:flex;align-items:center;gap:8px;height:42px;background:var(--c-surface);
+  border:1px solid var(--c-line-2);border-radius:21px;padding:0 14px}
+.search-box svg{width:17px;height:17px;stroke:var(--c-ink-3);fill:none;stroke-width:1.5;flex:none}
+.search-box input{flex:1;min-width:0;border:0;outline:0;background:none;font-family:inherit;
+  font-size:var(--fs-input);color:var(--c-ink);letter-spacing:inherit}
+.search-box input::placeholder{color:var(--c-ink-3)}
+@media(min-width:1080px){.search-row{display:none}}
+.search-inline{display:none}
+@media(min-width:1080px){
+  .search-inline{display:flex;align-items:center;gap:8px;height:38px;width:230px;
+    background:var(--c-surface);border:1px solid var(--c-line-2);border-radius:19px;
+    padding:0 12px;margin-right:6px}
+  .search-inline svg{width:16px;height:16px;stroke:var(--c-ink-3);fill:none;stroke-width:1.5;flex:none}
+  .search-inline input{flex:1;min-width:0;border:0;outline:0;background:none;font-family:inherit;
+    font-size:var(--fs-input);color:var(--c-ink);letter-spacing:inherit}
+  .search-inline input::placeholder{color:var(--c-ink-3)}
+}
+.hd{display:flex;align-items:center;height:56px;gap:var(--s4);position:relative}
+.logo{font-family:var(--f-title);font-size:19px;font-weight:600;letter-spacing:.22em;text-indent:.22em}
+.hd .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+@media(min-width:1080px){.hd .logo{position:static;transform:none}}
+.hd-icons{display:flex;align-items:center;gap:2px;margin-left:auto}
+.icon-btn{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--c-ink)}
+.icon-btn svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.5;fill:none}
+.cart-n{position:absolute;top:6px;right:4px;min-width:16px;height:16px;border-radius:8px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+.burger{width:44px;height:44px;background:none;border:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px}
+.burger span{width:20px;height:1.5px;background:var(--c-ink)}
+.icon-btn.member{display:none}
+@media(min-width:1080px){.icon-btn.member{display:flex}}
+nav.main{display:none}
+@media(min-width:1080px){
+  .burger{display:none}
+  .hd{height:68px}
+  .logo{font-size:22px}
+  nav.main{display:flex;gap:var(--s6);margin-left:var(--s7);font-size:14px}
+  nav.main a{padding:6px 0;border-bottom:1px solid transparent;transition:border-color var(--dur) var(--ease)}
+  nav.main a:hover{border-color:var(--c-ink)}
+  nav.main a.hot{color:var(--c-brand-ink)}
+  nav.main a.now{border-color:var(--c-ink)}
+}
+/* 手機抽屜選單 */
+.drawer{position:fixed;inset:0;z-index:var(--z-drawer);display:none}
+.drawer.open{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.drawer .panel{position:absolute;top:0;left:0;bottom:0;width:min(320px,84vw);background:var(--c-surface);
+  padding:var(--s6) var(--s5);overflow-y:auto}
+.drawer .panel a{display:block;padding:14px 0;font-size:16px;border-bottom:1px solid var(--c-line)}
+.drawer .panel a.now{color:var(--c-brand-ink)}
+.drawer .panel .sub{font-size:13px;color:var(--c-ink-3);margin-top:var(--s5)}
+.drawer .panel .sub a{display:inline;padding:0;font-size:inherit;border:0;color:var(--c-ink-2);
+  text-decoration:underline;text-underline-offset:3px}
+
+/* ---- 底部分頁列（同首頁五格）---- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bottom);display:grid;grid-template-columns:repeat(5,1fr);
+  background:rgba(250,250,248,.97);backdrop-filter:blur(8px);border-top:1px solid var(--c-line);
+  padding-bottom:env(safe-area-inset-bottom)}
+.tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;
+  font-size:10.5px;color:var(--c-ink-3)}
+.tabbar a.on{color:var(--c-ink)}
+.tabbar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
+.tabbar .tb-ic{position:relative}
+.tabbar .n{position:absolute;top:-4px;right:-9px;min-width:15px;height:15px;border-radius:8px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:9.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+@media(min-width:1080px){.tabbar{display:none}}
+body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+@media(min-width:1080px){body{padding-bottom:0}}
+
+/* ---- 分類開頭：只留大標（桌機加麵包屑），乾淨 ---- */
+.cat-head{padding-top:var(--s4);padding-bottom:var(--s4);text-align:center}
+.crumb{display:none;font-size:12.5px;color:var(--c-ink-3);margin-bottom:var(--s2)}
+@media(min-width:1080px){.crumb{display:block}}
+.crumb a:hover{color:var(--c-ink)}
+.cat-head h1{font-family:var(--f-title);font-size:var(--fs-h1);letter-spacing:.18em;text-indent:.18em}
+@media(min-width:1080px){.cat-head{padding-top:var(--s6);padding-bottom:var(--s5)}}
+
+/* ---- 回饋金：滿版細帶（同首頁優惠列語言），詞組斷行、不會破圖 ---- */
+.perks{background:var(--c-brand-bg);border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line)}
+.perks-in{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
+  gap:2px 12px;padding:8px var(--edge);font-size:12px;color:var(--c-brand-ink);
+  text-align:center;line-height:1.7}
+.perks b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---- 黏頂工具列 ---- */
+.toolbar{position:sticky;top:var(--hd-h);z-index:var(--z-sticky);background:rgba(250,250,248,.96);
+  backdrop-filter:blur(8px);border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line)}
+.toolbar-in{display:flex;align-items:center;gap:var(--s3);height:52px}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 var(--s4);
+  background:none;border:1px solid var(--c-line-2);border-radius:var(--r-sm);
+  font-size:13.5px;color:var(--c-ink);white-space:nowrap;transition:border-color var(--dur) var(--ease)}
+.tool-btn:hover{border-color:var(--c-ink)}
+.tool-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
+.tool-btn .on{display:inline-flex;min-width:17px;height:17px;border-radius:9px;background:var(--c-brand);
+  color:#fff;font-family:var(--f-num);font-size:10.5px;align-items:center;justify-content:center}
+.count{margin-left:auto;font-size:13px;color:var(--c-ink-3);white-space:nowrap}
+.count b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
+@media(max-width:719px){.count .legend{display:none}}
+
+/* ---- 商品格：手機 2 欄同邊距、平板 3、桌機 4 ---- */
+.list{padding-top:var(--s5);padding-bottom:var(--s7)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 10px}
+@media(min-width:720px){.grid{grid-template-columns:repeat(3,1fr);gap:var(--s6) var(--s4)}}
+@media(min-width:1080px){.grid{grid-template-columns:repeat(4,1fr);gap:48px 24px}}
+.card{display:block;position:relative}
+.card .ph{margin-bottom:var(--s3);transition:opacity var(--dur) var(--ease)}
+.card:hover .ph{opacity:.92}
+/* 第二張圖：桌機 hover 換圖（手機不做，點進商品頁看） */
+.card .ph .alt{position:absolute;inset:0;opacity:0;transition:opacity var(--dur) var(--ease);
+  background:linear-gradient(200deg,#E9E4DA 0%,#DDD4C6 60%,#D0C4B1 100%)}
+@media(min-width:1080px){.card:hover .ph .alt{opacity:1}}
+/* 標籤統一：連線棕底白字／現貨淺綠底綠字 */
+.badge{position:absolute;top:10px;left:10px;z-index:2;padding:3px 9px;font-size:11px;
+  letter-spacing:.06em;border-radius:var(--r-sm);line-height:1.7}
+.badge--live{background:var(--c-brand);color:#fff}
+.badge--stock{background:var(--c-ok-bg);color:var(--c-ok)}
+.card .nm{font-size:14px;line-height:1.6;color:var(--c-ink)}
+.card .pr{font-family:var(--f-num);font-size:15.5px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
+.card .pr .sale{color:var(--c-sale)}
+.card .pr s{color:var(--c-ink-3);font-weight:400;font-size:13px;margin-left:6px}
+.color-dots{display:flex;gap:5px;margin-top:7px}
+.color-dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+.color-dots .more-c{font-size:11px;color:var(--c-ink-3);line-height:1;align-self:center;margin-left:2px}
+
+/* 售完卡片：照樣顯示，接住補貨需求 */
+.card.sold .ph{opacity:.55}
+.card.sold .nm,.card.sold .pr{color:var(--c-ink-3)}
+.soldout{position:absolute;top:10px;left:10px;z-index:2;padding:3px 9px;font-size:11px;letter-spacing:.06em;
+  background:rgba(31,31,29,.82);color:#fff;border-radius:var(--r-sm);line-height:1.7}
+.notify{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:0 12px;height:var(--h-btn-mini);
+  background:none;border:1px solid var(--c-line-2);border-radius:var(--r-sm);
+  font-size:12.5px;color:var(--c-ink-2);transition:border-color var(--dur) var(--ease)}
+.notify:hover{border-color:var(--c-ink);color:var(--c-ink)}
+
+/* ---- 載入更多 ---- */
+.load{display:flex;flex-direction:column;align-items:center;gap:var(--s3);padding:var(--s6) 0 0}
+.load .prog{font-size:13px;color:var(--c-ink-3)}
+.load .prog b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;height:var(--h-btn-2);padding:0 var(--s7);
+  background:none;color:var(--c-ink);border:1px solid var(--c-line-2);
+  border-radius:var(--r-sm);font-size:14px;letter-spacing:.1em;transition:border-color var(--dur) var(--ease)}
+.btn-ghost:hover{border-color:var(--c-ink)}
+
+/* ---- 篩選抽屜 ---- */
+.filter{position:fixed;inset:0;z-index:var(--z-modal);display:none}
+.filter.open{display:block}
+.filter .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.filter .panel{position:absolute;top:0;right:0;bottom:0;width:min(360px,90vw);background:var(--c-surface);
+  display:flex;flex-direction:column}
+.filter .panel-hd{display:flex;align-items:center;justify-content:space-between;
+  padding:var(--s4) var(--s5);border-bottom:1px solid var(--c-line)}
+.filter .panel-hd h2{font-family:var(--f-title);font-size:17px;letter-spacing:.14em}
+.filter .close{width:44px;height:44px;background:none;border:0;font-size:20px;color:var(--c-ink-2);margin-right:-12px}
+.filter .panel-bd{flex:1;overflow-y:auto;padding:var(--s5)}
+.fgroup{margin-bottom:var(--s6)}
+.fgroup h3{font-size:13.5px;font-weight:500;color:var(--c-ink-2);margin-bottom:var(--s3)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chip{min-width:44px;height:40px;padding:0 var(--s4);background:none;border:1px solid var(--c-line-2);
+  border-radius:var(--r-sm);font-size:13.5px;font-family:var(--f-num);color:var(--c-ink);
+  transition:all var(--dur) var(--ease)}
+.chip:hover{border-color:var(--c-ink)}
+.chip.sel{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.swatches{display:flex;flex-wrap:wrap;gap:var(--s3)}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:2px;
+  font-size:11.5px;color:var(--c-ink-2)}
+.swatch i{width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+.swatch.sel i{outline:2px solid var(--c-ink);outline-offset:2px}
+.switch-row{display:flex;align-items:center;justify-content:space-between;font-size:14px}
+.switch{position:relative;width:44px;height:26px;border-radius:13px;background:var(--c-line-2);
+  border:0;transition:background var(--dur) var(--ease)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:left var(--dur) var(--ease)}
+.switch.on{background:var(--c-brand)}
+.switch.on::after{left:21px}
+.filter .panel-ft{display:flex;gap:var(--s3);padding:var(--s4) var(--s5);border-top:1px solid var(--c-line)}
+.filter .panel-ft button{flex:1;height:var(--h-btn-2);border-radius:var(--r-sm);font-size:14px;white-space:nowrap}
+.filter .panel-ft .clear{background:none;border:1px solid var(--c-line-2);color:var(--c-ink-2)}
+.filter .panel-ft .apply{background:var(--c-action);border:1px solid var(--c-action);color:var(--c-action-on)}
+
+/* ---- 頁尾：只在桌機顯示（同首頁）---- */
+footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s6) 0}
+@media(max-width:1079px){footer{display:none}}
+.site-copy{font-size:12px;color:var(--c-ink-3);display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);justify-content:center}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- 回饋金加碼結束時間：每期 10 天，正式站由後台填。全站必須是同一個值 -->
+<div class="notice"><span class="n-long">連線期進行中｜滿 <b>NT$3,000</b> 免運・回饋金加碼｜</span><span class="n-short">連線優惠中・</span>加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
+
+<header>
+  <div class="wrap hd">
+    <button class="burger" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="#">BACKSTAGE</a>
+    <nav class="main">
+      <a class="hot" href="#">本週連線</a>
+      <a href="#">新品上架</a>
+      <a href="#">上衣</a>
+      <a class="now" href="#">洋裝</a>
+      <a href="#">褲・裙</a>
+      <a href="#">外套</a>
+      <a href="#">飾品配件</a>
+    </nav>
+    <div class="hd-icons">
+      <div class="search-inline">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="search" placeholder="搜尋：書華、垂墜寬褲…">
+      </div>
+      <button class="icon-btn member" aria-label="收藏清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
+      <button class="icon-btn member" aria-label="會員"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
+      <button class="icon-btn" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n">2</span></button>
+    </div>
+  </div>
+  <div class="wrap search-row">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" placeholder="搜尋商品：書華、垂墜寬褲…">
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <div class="mask" onclick="document.getElementById('drawer').classList.remove('open')"></div>
+  <div class="panel">
+    <a href="#" style="color:var(--c-brand-ink)">本週連線</a>
+    <a href="#">新品上架</a>
+    <a href="#">上衣</a>
+    <a class="now" href="#">洋裝</a>
+    <a href="#">褲・裙</a>
+    <a href="#">外套</a>
+    <a href="#">飾品配件</a>
+    <p class="sub"><a href="#">會員登入</a>・<a href="#">訂單查詢</a>・<a href="#">購物說明</a></p>
+  </div>
+</div>
+
+<div class="wrap cat-head">
+  <p class="crumb"><a href="#">首頁</a>｜洋裝</p>
+  <h1>洋裝</h1>
+</div>
+
+<div class="perks">
+  <div class="perks-in">
+    <span class="nb">回饋金加碼中</span>
+    <span class="nb">滿 <b>3,000</b> 贈 <b>100</b></span>
+    <span class="nb">滿 <b>5,000</b> 贈 <b>300</b></span>
+    <span class="nb">滿 <b>8,000</b> 贈 <b>600</b></span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="wrap toolbar-in">
+    <button class="tool-btn" id="sortBtn" onclick="nextSort()">排序：本週推薦 <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="tool-btn" onclick="document.getElementById('filter').classList.add('open')">
+      篩選 <span class="on" id="fCount" hidden>1</span>
+    </button>
+    <span class="count"><span class="legend">紅字為連線價・</span>共 <b>16</b> 件</span>
+  </div>
+</div>
+
+<div class="wrap list">
+  <div class="grid">
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國瑞希拼接蕾絲洋裝</p>
+      <p class="pr"><span class="sale">NT$1,600</span> <s>NT$1,880</s></p>
+      <div class="color-dots"><i style="background:#F5F2EA"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國采妮波點洋裝（兩色）</p>
+      <p class="pr"><span class="sale">NT$1,650</span> <s>NT$1,880</s></p>
+      <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#2E2E2E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國瑞熙背心洋裝（兩色）</p>
+      <p class="pr"><span class="sale">NT$1,250</span> <s>NT$1,480</s></p>
+      <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#C8BAA8"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
+      <p class="nm">BS韓國點點細肩小洋裝</p>
+      <p class="pr"><span class="sale">NT$980</span> <s>NT$1,280</s></p>
+      <div class="color-dots"><i style="background:#31415E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國艾莉光澤洋裝（三色）</p>
+      <p class="pr"><span class="sale">NT$1,500</span> <s>NT$1,680</s></p>
+      <div class="color-dots"><i style="background:#D9C6B8"></i><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國敏真絲紗洋裝（兩色）</p>
+      <p class="pr"><span class="sale">NT$1,300</span> <s>NT$1,580</s></p>
+      <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#8A93A4"></i></div>
+    </a>
+    <a class="card sold" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="soldout">本批售完</span></div>
+      <p class="nm">BS韓國瑞熙腰身洋裝</p>
+      <p class="pr">NT$1,480</p>
+      <button class="notify" onclick="event.preventDefault();this.textContent='已登記，補貨會通知你'">補貨通知我</button>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國腰間打褶長洋裝</p>
+      <p class="pr"><span class="sale">NT$1,680</span> <s>NT$2,080</s></p>
+      <div class="color-dots"><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
+      <p class="nm">BS韓國壓褶感傘擺洋裝</p>
+      <p class="pr"><span class="sale">NT$1,580</span> <s>NT$1,980</s></p>
+      <div class="color-dots"><i style="background:#CDB8A6"></i><i style="background:#22282E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國雲霧雪紡長洋裝</p>
+      <p class="pr"><span class="sale">NT$1,780</span> <s>NT$2,180</s></p>
+      <div class="color-dots"><i style="background:#EDE9DF"></i><i style="background:#8A93A4"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國方領小香洋裝</p>
+      <p class="pr"><span class="sale">NT$1,880</span> <s>NT$2,280</s></p>
+      <div class="color-dots"><i style="background:#E5DDD2"></i><i style="background:#2E2E2E"></i></div>
+    </a>
+    <a class="card" href="#">
+      <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
+      <p class="nm">BS韓國荷葉領棉麻洋裝</p>
+      <p class="pr"><span class="sale">NT$1,380</span> <s>NT$1,680</s></p>
+      <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#9DA48E"></i><i style="background:#C8BAA8"></i><span class="more-c">+1</span></div>
+    </a>
+  </div>
+
+  <div class="load">
+    <p class="prog">已看 <b>12</b> 件・共 <b>16</b> 件</p>
+    <button class="btn-ghost" onclick="this.previousElementSibling.innerHTML='已看 <b>16</b> 件・共 <b>16</b> 件';this.textContent='沒有更多了'">載入更多</button>
+  </div>
+</div>
+
+<div class="filter" id="filter">
+  <div class="mask" onclick="document.getElementById('filter').classList.remove('open')"></div>
+  <div class="panel">
+    <div class="panel-hd">
+      <h2>篩選</h2>
+      <button class="close" onclick="document.getElementById('filter').classList.remove('open')">✕</button>
+    </div>
+    <div class="panel-bd">
+      <div class="fgroup">
+        <h3>只看有我的尺寸</h3>
+        <div class="chips">
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">S</button>
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">M</button>
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">L</button>
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">F（均碼）</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <h3>顏色</h3>
+        <div class="swatches">
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#F5F2EA"></i>米白</button>
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#D9C6B8"></i>杏裸</button>
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#C8BAA8"></i>奶茶</button>
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#9DA48E"></i>灰綠</button>
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#8A93A4"></i>霧藍</button>
+          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#3B3B3B"></i>黑</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <div class="switch-row">
+          <span>只看現貨（3 天內出貨）</span>
+          <button class="switch" onclick="this.classList.toggle('on');fTick()" aria-label="只看現貨"></button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <h3>價格</h3>
+        <div class="chips">
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">NT$1,000 內</button>
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">1,000–1,500</button>
+          <button class="chip" onclick="this.classList.toggle('sel');fTick()">1,500 以上</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel-ft">
+      <button class="clear" onclick="document.querySelectorAll('#filter .sel,#filter .switch.on').forEach(function(e){e.classList.remove('sel','on')});fTick()">清除全部</button>
+      <button class="apply" onclick="document.getElementById('filter').classList.remove('open')">看結果</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap site-copy">
+    <span>© 2026 BACKSTAGE</span><span>仰揚有限公司</span><span>連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</span>
+  </div>
+</footer>
+
+<nav class="tabbar">
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9z"/></svg></span>首頁</a>
+  <a href="#" class="on" onclick="document.getElementById('drawer').classList.add('open');return false"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>分類</a>
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></span>收藏</a>
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n">2</span></span>購物車</a>
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>會員</a>
+</nav>
+
+<script>
+/* 加碼倒數：改 data-deadline 即可換期（不是收單截止，過期照常販售） */
+(function(){
+  var els=document.querySelectorAll('.cd');if(!els.length)return;
+  function pad(n){return n<10?'0'+n:n}
+  function tick(){
+    els.forEach(function(el){
+      var end=new Date(el.dataset.deadline).getTime(),d=end-Date.now();
+      if(d<=0){el.textContent='本期加碼已結束';return}
+      var day=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),
+          m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);
+      el.textContent=(day>0?day+' 天 ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+    });
+  }
+  tick();setInterval(tick,1000);
+})();
+
+/* 排序：DEMO 只輪播選項文字 */
+var sorts=['本週推薦','上架時間','價格低到高','價格高到低'],si=0;
+function nextSort(){
+  si=(si+1)%sorts.length;
+  document.getElementById('sortBtn').innerHTML='排序：'+sorts[si]+' <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+}
+/* 篩選數量小紅點 */
+function fTick(){
+  var n=document.querySelectorAll('#filter .sel,#filter .switch.on').length;
+  var b=document.getElementById('fCount');
+  b.hidden=n===0;b.textContent=n;
+}
+</script>
+</body>
+</html>
