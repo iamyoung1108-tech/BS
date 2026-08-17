@@ -16,6 +16,7 @@
    商品圖 2:3 零裁切・手機 2 欄同邊距・平板 3 欄・桌機 4 欄
    標籤統一：連線＝棕底白字／現貨＝淺綠底綠字
    售完照樣顯示，給「補貨通知我」
+   不做篩選（洋：不希望客人先用價格/顏色/尺寸限制自己，用衣服吸引人）
    全站 RWD：手機（預設）→ 平板 ≥720px → 桌機 ≥1080px
    ============================================================ */
 /* ===== BACKSTAGE Design Tokens v1 — 三支檔案共用，勿在單頁另外定義 ===== */
@@ -110,8 +111,6 @@ img{display:block;max-width:100%}
   padding:9px var(--edge);letter-spacing:.04em}
 .notice b{font-family:var(--f-num);font-weight:500}
 .notice .cd{font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.notice .n-short{display:none}
-@media(max-width:719px){.notice .n-long{display:none}.notice .n-short{display:inline}}
 
 /* ---- 頁首（同首頁：手機常駐搜尋列）---- */
 :root{--hd-h:116px}
@@ -212,17 +211,11 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
   font-size:13.5px;color:var(--c-ink);white-space:nowrap;transition:border-color var(--dur) var(--ease)}
 .tool-btn:hover{border-color:var(--c-ink)}
 .tool-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
-.tool-btn .on{display:inline-flex;min-width:17px;height:17px;border-radius:9px;background:var(--c-brand);
-  color:#fff;font-family:var(--f-num);font-size:10.5px;align-items:center;justify-content:center}
-.count{margin-left:auto;font-size:13px;color:var(--c-ink-3);white-space:nowrap}
-.count b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
-@media(max-width:719px){.count .legend{display:none}}
 /* 窄機（SE 等）：間距與按鈕內距再收一階，一列鎖住不溢出 */
 @media(max-width:359px){
   .toolbar-in{gap:8px}
   .tool-btn{padding:0 9px;font-size:12.5px}
   .tool-btn.cat{letter-spacing:.04em}
-  .count{font-size:11.5px}
 }
 
 /* ---- 商品格：手機 2 欄同邊距、平板 3、桌機 4 ---- */
@@ -258,49 +251,11 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .notify:hover{border-color:var(--c-ink);color:var(--c-ink)}
 
 /* ---- 載入更多 ---- */
-.load{display:flex;flex-direction:column;align-items:center;gap:var(--s3);padding:var(--s6) 0 0}
-.load .prog{font-size:13px;color:var(--c-ink-3)}
-.load .prog b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
+.load{display:flex;justify-content:center;padding:var(--s6) 0 0}
 .btn-ghost{display:inline-flex;align-items:center;justify-content:center;height:var(--h-btn-2);padding:0 var(--s7);
   background:none;color:var(--c-ink);border:1px solid var(--c-line-2);
   border-radius:var(--r-sm);font-size:14px;letter-spacing:.1em;transition:border-color var(--dur) var(--ease)}
 .btn-ghost:hover{border-color:var(--c-ink)}
-
-/* ---- 篩選抽屜 ---- */
-.filter{position:fixed;inset:0;z-index:var(--z-modal);display:none}
-.filter.open{display:block}
-.filter .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
-.filter .panel{position:absolute;top:0;right:0;bottom:0;width:min(360px,90vw);background:var(--c-surface);
-  display:flex;flex-direction:column}
-.filter .panel-hd{display:flex;align-items:center;justify-content:space-between;
-  padding:var(--s4) var(--s5);border-bottom:1px solid var(--c-line)}
-.filter .panel-hd h2{font-family:var(--f-title);font-size:17px;letter-spacing:.14em}
-.filter .close{width:44px;height:44px;background:none;border:0;font-size:20px;color:var(--c-ink-2);margin-right:-12px}
-.filter .panel-bd{flex:1;overflow-y:auto;padding:var(--s5)}
-.fgroup{margin-bottom:var(--s6)}
-.fgroup h3{font-size:13.5px;font-weight:500;color:var(--c-ink-2);margin-bottom:var(--s3)}
-.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
-.chip{min-width:44px;height:40px;padding:0 var(--s4);background:none;border:1px solid var(--c-line-2);
-  border-radius:var(--r-sm);font-size:13.5px;font-family:var(--f-num);color:var(--c-ink);
-  transition:all var(--dur) var(--ease)}
-.chip:hover{border-color:var(--c-ink)}
-.chip.sel{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
-.swatches{display:flex;flex-wrap:wrap;gap:var(--s3)}
-.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:2px;
-  font-size:11.5px;color:var(--c-ink-2)}
-.swatch i{width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
-.swatch.sel i{outline:2px solid var(--c-ink);outline-offset:2px}
-.switch-row{display:flex;align-items:center;justify-content:space-between;font-size:14px}
-.switch{position:relative;width:44px;height:26px;border-radius:13px;background:var(--c-line-2);
-  border:0;transition:background var(--dur) var(--ease)}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
-  background:#fff;transition:left var(--dur) var(--ease)}
-.switch.on{background:var(--c-brand)}
-.switch.on::after{left:21px}
-.filter .panel-ft{display:flex;gap:var(--s3);padding:var(--s4) var(--s5);border-top:1px solid var(--c-line)}
-.filter .panel-ft button{flex:1;height:var(--h-btn-2);border-radius:var(--r-sm);font-size:14px;white-space:nowrap}
-.filter .panel-ft .clear{background:none;border:1px solid var(--c-line-2);color:var(--c-ink-2)}
-.filter .panel-ft .apply{background:var(--c-action);border:1px solid var(--c-action);color:var(--c-action-on)}
 
 /* ---- 頁尾：只在桌機顯示（同首頁）---- */
 footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s6) 0}
@@ -314,7 +269,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <body>
 
 <!-- 回饋金加碼結束時間：每期 10 天，正式站由後台填。全站必須是同一個值 -->
-<div class="notice"><span class="n-long">連線期進行中｜滿 <b>NT$3,000</b> 免運・回饋金加碼｜</span><span class="n-short">連線優惠中・</span>加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
+<div class="notice">回饋金加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
 
 <header>
   <div class="wrap hd">
@@ -365,7 +320,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 
 <!-- 活動帶：連線期結束後這一格換其他活動文案，正式站由後台供應 -->
 <div class="promo">
-  <p class="l1">連線回饋金加碼中</p>
+  <p class="l1">本期連線・滿 3,000 免運</p>
   <p class="l2">訂單滿 3,000 贈 100／滿 5,000 贈 300／滿 8,000 贈 600</p>
 </div>
 
@@ -373,10 +328,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <div class="wrap toolbar-in">
     <button class="tool-btn cat" onclick="document.getElementById('drawer').classList.add('open')">洋裝 <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
     <button class="tool-btn" id="sortBtn" onclick="nextSort()">排序<span class="sort-v" id="sortVal">：本週推薦</span> <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
-    <button class="tool-btn" onclick="document.getElementById('filter').classList.add('open')">
-      篩選 <span class="on" id="fCount" hidden>1</span>
-    </button>
-    <span class="count"><span class="legend">紅字為連線價・</span>共 <b>16</b> 件</span>
+
   </div>
 </div>
 
@@ -446,58 +398,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   </div>
 
   <div class="load">
-    <p class="prog">已看 <b>12</b> 件・共 <b>16</b> 件</p>
-    <button class="btn-ghost" onclick="this.previousElementSibling.innerHTML='已看 <b>16</b> 件・共 <b>16</b> 件';this.textContent='沒有更多了'">載入更多</button>
-  </div>
-</div>
-
-<div class="filter" id="filter">
-  <div class="mask" onclick="document.getElementById('filter').classList.remove('open')"></div>
-  <div class="panel">
-    <div class="panel-hd">
-      <h2>篩選</h2>
-      <button class="close" onclick="document.getElementById('filter').classList.remove('open')">✕</button>
-    </div>
-    <div class="panel-bd">
-      <div class="fgroup">
-        <h3>只看有我的尺寸</h3>
-        <div class="chips">
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">S</button>
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">M</button>
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">L</button>
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">F（均碼）</button>
-        </div>
-      </div>
-      <div class="fgroup">
-        <h3>顏色</h3>
-        <div class="swatches">
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#F5F2EA"></i>米白</button>
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#D9C6B8"></i>杏裸</button>
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#C8BAA8"></i>奶茶</button>
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#9DA48E"></i>灰綠</button>
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#8A93A4"></i>霧藍</button>
-          <button class="swatch" onclick="this.classList.toggle('sel');fTick()"><i style="background:#3B3B3B"></i>黑</button>
-        </div>
-      </div>
-      <div class="fgroup">
-        <div class="switch-row">
-          <span>只看現貨（3 天內出貨）</span>
-          <button class="switch" onclick="this.classList.toggle('on');fTick()" aria-label="只看現貨"></button>
-        </div>
-      </div>
-      <div class="fgroup">
-        <h3>價格</h3>
-        <div class="chips">
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">NT$1,000 內</button>
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">1,000–1,500</button>
-          <button class="chip" onclick="this.classList.toggle('sel');fTick()">1,500 以上</button>
-        </div>
-      </div>
-    </div>
-    <div class="panel-ft">
-      <button class="clear" onclick="document.querySelectorAll('#filter .sel,#filter .switch.on').forEach(function(e){e.classList.remove('sel','on')});fTick()">清除全部</button>
-      <button class="apply" onclick="document.getElementById('filter').classList.remove('open')">看結果</button>
-    </div>
+    <button class="btn-ghost" onclick="this.textContent='沒有更多了'">載入更多</button>
   </div>
 </div>
 
@@ -537,12 +438,6 @@ var sorts=['本週推薦','上架時間','價格低到高','價格高到低'],si
 function nextSort(){
   si=(si+1)%sorts.length;
   document.getElementById('sortVal').textContent='：'+sorts[si];
-}
-/* 篩選數量小紅點 */
-function fTick(){
-  var n=document.querySelectorAll('#filter .sel,#filter .switch.on').length;
-  var b=document.getElementById('fCount');
-  b.hidden=n===0;b.textContent=n;
 }
 </script>
 </body>
