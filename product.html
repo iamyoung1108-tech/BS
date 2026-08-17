@@ -418,6 +418,30 @@ table.size th{background:var(--c-bg);color:var(--c-ink-2);font-family:var(--f-bo
 @media(min-width:720px){.tail{flex-basis:30%}}
 @media(min-width:1080px){.tail{flex-basis:22%}}
 
+/* ---- 推薦快速加入的選購小卡：有顏色/尺寸要選才出現，選完就走 ---- */
+.qs{position:fixed;inset:0;z-index:var(--z-toast);display:none}
+.qs.open{display:block}
+.qs .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.qs .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--c-surface);
+  border-radius:var(--r-md) var(--r-md) 0 0;padding:var(--s5) var(--edge) calc(var(--s4) + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 30px rgba(0,0,0,.10);max-width:var(--max-w);margin:0 auto}
+@media(min-width:1080px){.qs .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);
+  width:420px;border-radius:var(--r-md)}}
+.qs .head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  padding-bottom:var(--s3);border-bottom:1px solid var(--c-line)}
+.qs .head .nm{font-size:14.5px}
+.qs .head .pr{font-family:var(--f-num);font-size:15px;font-weight:600;color:var(--c-sale);white-space:nowrap}
+.qs .head .pr s{font-weight:400;font-size:12px;color:var(--c-ink-3);margin-left:5px}
+.qs .grp{margin-top:var(--s4)}
+.qs .grp h4{font-size:13px;font-weight:500;color:var(--c-ink-2);margin:0 0 8px}
+.qs .swatches{display:flex;gap:10px}
+.qs .swatch.on i{outline:2px solid var(--c-ink);outline-offset:2px}
+.qs .swatch.on{color:var(--c-ink)}
+.qs .chips .chip.on{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.qs .go{width:100%;height:var(--h-btn-2);margin-top:var(--s5);background:var(--c-action);
+  color:var(--c-action-on);border:1px solid var(--c-action);border-radius:var(--r-sm);
+  font-size:14.5px;letter-spacing:.08em}
+
 /* ---- 加入購物車後的小卡：那一秒是防備最低的時候 ---- */
 .as{position:fixed;inset:0;z-index:55;display:none}
 .as.open{display:block}
@@ -681,37 +705,37 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <div class="rail" id="recRail">
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'雲朵感短版針織外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="雲朵感短版針織外套" data-colors="奶茶|#C8BAA8,黑|#3B3B3B" data-sizes="F" data-sale="1280" data-was="1580" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">雲朵感短版針織外套</p>
         <p class="pr"><span class="sale">NT$1,280</span> <s>NT$1,580</s></p>
       </div>
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'法式方領棉質上衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="法式方領棉質上衣" data-colors="米白|#F1EDE6,奶茶|#C8BAA8,黑|#3B3B3B" data-sizes="S,M,L" data-sale="880" data-was="1080" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">法式方領棉質上衣</p>
         <p class="pr"><span class="sale">NT$880</span> <s>NT$1,080</s></p>
       </div>
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'輕薄防曬襯衫外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="輕薄防曬襯衫外套" data-colors="米白|#F1EDE6,霧綠|#B9C3BE" data-sizes="F" data-sale="1080" data-was="1380" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">輕薄防曬襯衫外套</p>
         <p class="pr"><span class="sale">NT$1,080</span> <s>NT$1,380</s></p>
       </div>
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'微光緞面半身裙')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="微光緞面半身裙" data-colors="奶茶|#C8BAA8,霧藍|#8E9AA6" data-sizes="S,M" data-sale="1180" data-was="1480" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">微光緞面半身裙</p>
         <p class="pr"><span class="sale">NT$1,180</span> <s>NT$1,480</s></p>
       </div>
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'軟糯羊毛混紡圍巾')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="軟糯羊毛混紡圍巾" data-colors="燕麥|#EDE3D6" data-sizes="F" data-sale="680" data-was="880" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">軟糯羊毛混紡圍巾</p>
         <p class="pr"><span class="sale">NT$680</span> <s>NT$880</s></p>
       </div>
       <div class="card">
         <div class="ph"><span class="tag2">連線</span>
-          <button class="qadd" onclick="qa(this,'落肩感長版大衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          <button class="qadd" data-nm="落肩感長版大衣" data-colors="奶茶|#C8BAA8,黑|#3B3B3B" data-sizes="S,M,L" data-sale="2480" data-was="2980" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">落肩感長版大衣</p>
         <p class="pr"><span class="sale">NT$2,480</span> <s>NT$2,980</s></p>
       </div>
@@ -795,12 +819,12 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <p class="sub">這兩件我會跟它一起穿</p>
     <div class="mini">
       <div class="card">
-        <div class="ph"><button class="qadd" onclick="qa(this,'雲朵感短版針織外套')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <div class="ph"><button class="qadd" data-nm="雲朵感短版針織外套" data-colors="奶茶|#C8BAA8,黑|#3B3B3B" data-sizes="F" data-sale="1280" data-was="1580" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">雲朵感短版針織外套</p>
         <p class="pr"><span class="sale">NT$1,280</span></p>
       </div>
       <div class="card">
-        <div class="ph"><button class="qadd" onclick="qa(this,'法式方領棉質上衣')" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <div class="ph"><button class="qadd" data-nm="法式方領棉質上衣" data-colors="米白|#F1EDE6,奶茶|#C8BAA8,黑|#3B3B3B" data-sizes="S,M,L" data-sale="880" data-was="1080" onclick="quickAdd(event,this)" aria-label="加入購物車"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
         <p class="nm">法式方領棉質上衣</p>
         <p class="pr"><span class="sale">NT$880</span></p>
       </div>
@@ -809,6 +833,16 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <button class="keep" onclick="closeAS()">繼續逛</button>
       <a class="pay" href="checkout.html">去結帳</a>
     </div>
+  </div>
+</div>
+
+<div class="qs" id="qs">
+  <div class="mask" onclick="qsClose()"></div>
+  <div class="sheet">
+    <div class="head"><p class="nm" id="qsNm"></p><p class="pr" id="qsPr"></p></div>
+    <div class="grp" id="qsColorGrp"><h4>顏色</h4><div class="swatches" id="qsColors"></div></div>
+    <div class="grp" id="qsSizeGrp"><h4>尺寸</h4><div class="chips" id="qsSizes"></div></div>
+    <button class="go" type="button" onclick="qsConfirm()">加入購物車</button>
   </div>
 </div>
 
@@ -872,12 +906,47 @@ function toast(msg,ms){
   clearTimeout(window._tt);
   window._tt=setTimeout(function(){t.classList.remove('show')},ms||1500);
 }
-function qa(btn,name){
-  if(btn.classList.contains('done'))return;
+/* 推薦快速加入：沒得選→直接加；有顏色/尺寸→升起選購小卡選完再加 */
+var qsState={btn:null,color:'',size:''};
+function markDone(btn){
   btn.classList.add('done');
   btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  bump();
-  toast('已加入');
+}
+function quickAdd(ev,btn){
+  ev.preventDefault(); ev.stopPropagation();
+  if(btn.classList.contains('done'))return;
+  var colors=btn.dataset.colors.split(','), sizes=btn.dataset.sizes.split(',');
+  if(colors.length===1 && sizes.length===1 && sizes[0]==='F'){
+    markDone(btn); bump(); toast('已加入'); return;
+  }
+  qsState={btn:btn,color:'',size:''};
+  document.getElementById('qsNm').textContent=btn.dataset.nm;
+  document.getElementById('qsPr').innerHTML='NT$'+Number(btn.dataset.sale).toLocaleString('en-US')
+    +' <s>NT$'+Number(btn.dataset.was).toLocaleString('en-US')+'</s>';
+  var cg=document.getElementById('qsColorGrp'), cs=document.getElementById('qsColors');
+  if(colors.length>1){
+    cg.hidden=false;
+    cs.innerHTML=colors.map(function(c){var a=c.split('|');
+      return '<button type="button" class="swatch" onclick="qsPick(this,\'color\',\''+a[0]+'\')"><i style="background:'+a[1]+'"></i>'+a[0]+'</button>';}).join('');
+  }else{cg.hidden=true; qsState.color=colors[0].split('|')[0];}
+  var sg=document.getElementById('qsSizeGrp'), ss=document.getElementById('qsSizes');
+  if(!(sizes.length===1 && sizes[0]==='F')){
+    sg.hidden=false;
+    ss.innerHTML=sizes.map(function(z){
+      return '<button type="button" class="chip" onclick="qsPick(this,\'size\',\''+z+'\')">'+z+'</button>';}).join('');
+  }else{sg.hidden=true; qsState.size='F';}
+  document.getElementById('qs').classList.add('open');
+}
+function qsPick(el,kind,val){
+  qsState[kind]=val;
+  Array.prototype.forEach.call(el.parentElement.children,function(c){c.classList.remove('on')});
+  el.classList.add('on');
+}
+function qsClose(){document.getElementById('qs').classList.remove('open')}
+function qsConfirm(){
+  if(!qsState.color){toast('先選一下顏色');return}
+  if(!qsState.size){toast('先選一下尺寸');return}
+  qsClose(); markDone(qsState.btn); bump(); toast('已加入');
 }
 function closeAS(){document.getElementById('addSheet').classList.remove('open')}
 function pickSize(btn,name){
