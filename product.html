@@ -517,22 +517,22 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <body>
 <noscript><div style="background:#FCEFEE;color:#C0392B;font-size:13px;line-height:1.7;padding:10px 16px;text-align:center">這個預覽視窗沒有執行程式，倒數與購物車不會動；請用瀏覽器（Safari/Chrome）開啟檔案看完整效果</div></noscript>
 
-<div class="notice"><span class="n-long">連線期進行中｜滿 <b>NT$3,000</b> 免運・回饋金加碼｜</span><span class="n-short">連線優惠中・</span>加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
+<div class="notice">回饋金加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
 
 <header>
   <div class="wrap hd">
     <button class="burger" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open')">
       <span></span><span></span><span></span>
     </button>
-    <a class="logo" href="#">BACKSTAGE</a>
+    <a class="logo" href="index.html">BACKSTAGE</a>
     <nav class="main">
-      <a class="hot" href="#">本週連線</a>
-      <a href="#">新品上架</a>
-      <a href="#">上衣</a>
-      <a href="#">洋裝</a>
-      <a href="#">褲・裙</a>
-      <a href="#">外套</a>
-      <a href="#">飾品配件</a>
+      <a class="hot" href="list.html">本週連線</a>
+      <a href="list.html">新品上架</a>
+      <a href="list.html">上衣</a>
+      <a href="list.html">洋裝</a>
+      <a href="list.html">褲・裙</a>
+      <a href="list.html">外套</a>
+      <a href="list.html">飾品配件</a>
     </nav>
     <div class="hd-icons">
       <div class="search-inline">
@@ -541,7 +541,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       </div>
       <button class="icon-btn srch" aria-label="搜尋" onclick="var r=document.getElementById('searchRow');r.classList.toggle('open');if(r.classList.contains('open'))r.querySelector('input').focus()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
       <button class="icon-btn member" aria-label="會員"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
-      <button class="icon-btn" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n" id="cartN">2</span></button>
+      <button class="icon-btn" aria-label="購物車" onclick="location.href='checkout.html'"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n" id="cartN">2</span></button>
     </div>
   </div>
   <div class="wrap search-row" id="searchRow">
@@ -555,20 +555,20 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="drawer" id="drawer">
   <div class="mask" onclick="document.getElementById('drawer').classList.remove('open')"></div>
   <div class="panel">
-    <a href="#" style="color:var(--c-brand-ink)">本週連線</a>
-    <a href="#">新品上架</a>
-    <a href="#">上衣</a>
-    <a href="#">洋裝</a>
-    <a href="#">褲・裙</a>
-    <a href="#">外套</a>
-    <a href="#">飾品配件</a>
+    <a href="list.html" style="color:var(--c-brand-ink)">本週連線</a>
+    <a href="list.html">新品上架</a>
+    <a href="list.html">上衣</a>
+    <a href="list.html">洋裝</a>
+    <a href="list.html">褲・裙</a>
+    <a href="list.html">外套</a>
+    <a href="list.html">飾品配件</a>
     <p class="sub">會員登入・訂單查詢・購物說明</p>
     <p class="sub" style="font-size:11px;opacity:.45;margin-top:12px">原型版本 v13・08/14 14:35</p>
   </div>
 </div>
 
 <div class="wrap">
-  <p class="crumb"><a href="#">首頁</a>｜<a href="#">本週連線</a>｜垂墜感西裝寬褲</p>
+  <p class="crumb"><a href="index.html">首頁</a>｜<a href="list.html">本週連線</a>｜垂墜感西裝寬褲</p>
 
   <div class="pdp">
 
@@ -743,7 +743,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
         <p class="pr"><span class="sale">NT$2,480</span> <s>NT$2,980</s></p>
         <div class="dots"><i style="background:#C8BAA8"></i><i style="background:#3B3B3B"></i></div>
       </div>
-      <a class="tail" href="#">
+      <a class="tail" href="list.html">
         <span class="in">
           <span class="ar"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
           <span class="tx">回本期新品</span>
@@ -755,7 +755,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <button class="rail-nav next" type="button" aria-label="下一批" onclick="railGo(1)"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
     </div>
 
-    <a class="more" href="#">回本期新品</a>
+    <a class="more" href="list.html">回本期新品</a>
   </div>
 </div>
 
@@ -764,7 +764,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <div class="buybar-in">
     <a class="bb-ic" href="#" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open');return false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>選單</a>
     <a class="bb-ic" href="#" aria-label="心儀清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg><span class="n" id="favN">5</span>心儀</a>
-    <a class="bb-ic" href="#" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n cart-n2" id="cartN2">2</span>購物車</a>
+    <a class="bb-ic" href="checkout.html" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n cart-n2" id="cartN2">2</span>購物車</a>
     <button class="add" onclick="addCart()"><i class="cdot" id="bbDot" style="background:#C8BAA8"></i>加入購物車</button>
   </div>
 </div>
@@ -834,7 +834,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     </div>
     <div class="acts">
       <button class="keep" onclick="closeAS()">繼續逛</button>
-      <a class="pay" href="#">去結帳</a>
+      <a class="pay" href="checkout.html">去結帳</a>
     </div>
   </div>
 </div>
