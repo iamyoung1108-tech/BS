@@ -355,7 +355,7 @@ table.size th{background:var(--c-bg);color:var(--c-ink-2);font-family:var(--f-bo
 .sp:checked + .spot .pop{display:block}
 .sp:checked + .spot i{transform:rotate(45deg)}
 .lk-sizes .chip{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
-.lk-sizes .chip:has(input:checked){background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.lk-sizes .chip.on{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
 /* 整套尺寸選擇卡 */
 .lk-note{font-size:12.5px;color:var(--c-ink-2);margin:-4px 0 var(--s3)}
 .lk-note b{font-family:var(--f-num);font-weight:600;color:var(--c-sale)}
@@ -771,31 +771,31 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <label class="mask" for="lookOpen"></label>
   <div class="box">
     <label class="close" for="lookOpen" style="display:flex;align-items:center;justify-content:center">✕</label>
-    <h3>整套穿搭・一次帶走</h3>
-    <p class="lk-note">整套連線價 <b>NT$3,640</b><s>NT$4,540</s>・已達滿 3,000 免運＋100元 回饋金</p>
+    <h3>整套穿搭・想帶幾件都可以</h3>
+    <p class="lk-note" id="lkNote">點尺寸挑要帶的，一件也可以</p>
     <div class="lk-item">
       <p class="nm">垂墜感西裝寬褲<b>NT$1,480</b></p>
-      <div class="lk-sizes">
-        <label class="chip"><input type="radio" name="lkA" hidden>S</label>
-        <label class="chip"><input type="radio" name="lkA" hidden>M</label>
+      <div class="lk-sizes" data-g="a">
+        <button type="button" class="chip" onclick="lkPick(this,'a','S',1480)">S</button>
+        <button type="button" class="chip" onclick="lkPick(this,'a','M',1480)">M</button>
         <span class="chip sold">L</span>
       </div>
     </div>
     <div class="lk-item">
       <p class="nm">雲朵感短版針織外套<b>NT$1,280</b></p>
-      <div class="lk-sizes">
-        <label class="chip"><input type="radio" name="lkB" hidden>F（均碼）</label>
+      <div class="lk-sizes" data-g="b">
+        <button type="button" class="chip" onclick="lkPick(this,'b','F',1280)">F（均碼）</button>
       </div>
     </div>
     <div class="lk-item">
       <p class="nm">法式方領棉質上衣<b>NT$880</b></p>
-      <div class="lk-sizes">
-        <label class="chip"><input type="radio" name="lkC" hidden>S</label>
-        <label class="chip"><input type="radio" name="lkC" hidden>M</label>
-        <label class="chip"><input type="radio" name="lkC" hidden>L</label>
+      <div class="lk-sizes" data-g="c">
+        <button type="button" class="chip" onclick="lkPick(this,'c','S',880)">S</button>
+        <button type="button" class="chip" onclick="lkPick(this,'c','M',880)">M</button>
+        <button type="button" class="chip" onclick="lkPick(this,'c','L',880)">L</button>
       </div>
     </div>
-    <button class="lk-cta" onclick="addLook()">三件一起帶走　NT$3,640</button>
+    <button class="lk-cta" id="lkCta" onclick="addLook()">先點尺寸選要帶的</button>
   </div>
 </div>
 
@@ -914,18 +914,48 @@ function pickSize(btn,name){
   btn.classList.add('on');
   document.getElementById('pickedSize').textContent=name;
 }
-/* 整套穿搭：整套帶走（開關與尺寸選擇為純 CSS，此處只負責加入購物車） */
+/* 整套穿搭：每一件獨立選，點尺寸＝要帶這件、再點一次＝不帶，一件也能加 */
+var lk={a:{size:null,price:1480},b:{size:null,price:1280},c:{size:null,price:880}};
+function lkPick(btn,g,size,price){
+  var box=btn.parentElement;
+  if(lk[g].size===size){                       // 再點一次＝取消這件
+    lk[g].size=null; btn.classList.remove('on');
+  }else{
+    lk[g].size=size;
+    Array.prototype.forEach.call(box.children,function(c){c.classList.remove('on')});
+    btn.classList.add('on');
+  }
+  lkSum();
+}
+function lkSum(){
+  var n=0,sum=0;
+  ['a','b','c'].forEach(function(g){if(lk[g].size){n++;sum+=lk[g].price}});
+  var note=document.getElementById('lkNote'),cta=document.getElementById('lkCta');
+  if(n===0){
+    note.textContent='點尺寸挑要帶的，一件也可以';
+    cta.textContent='先點尺寸選要帶的';
+    return;
+  }
+  var NT=function(x){return 'NT$'+x.toLocaleString('en-US')};
+  var extra='';
+  if(sum>=3000){
+    var give=sum>=8000?600:sum>=5000?300:100;
+    extra='・已達免運＋'+give+'元回饋金';
+  }else{
+    extra='・再 '+NT(3000-sum)+' 免運';
+  }
+  note.innerHTML='已選 <b>'+n+'</b> 件共 <b>'+NT(sum)+'</b>'+extra;
+  cta.textContent='帶走 '+n+' 件　'+NT(sum);
+}
 function addLook(){
-  var groups=document.querySelectorAll('#lookSheet .lk-sizes');
-  var ok=true;
-  groups.forEach(function(g){if(!g.querySelector('input:checked'))ok=false});
-  if(!ok){toast('每一件都選一下尺寸');return}
+  var n=0;['a','b','c'].forEach(function(g){if(lk[g].size)n++});
+  if(n===0){toast('先點尺寸選要帶的');return}
   document.getElementById('lookOpen').checked=false;
-  [document.getElementById('cartN'),document.getElementById('cartN2')].forEach(function(n){
-    n.textContent=parseInt(n.textContent)+3;
-    n.classList.add('bump');setTimeout(function(){n.classList.remove('bump')},250);
+  [document.getElementById('cartN'),document.getElementById('cartN2')].forEach(function(el){
+    el.textContent=parseInt(el.textContent)+n;
+    el.classList.add('bump');setTimeout(function(){el.classList.remove('bump')},250);
   });
-  toast('整套已加入');
+  toast(n===3?'整套已加入':'已加入 '+n+' 件');
 }
 /* 桌機滑軌箭頭：滑到頭或滑到底就淡出 */
 function railGo(dir){
