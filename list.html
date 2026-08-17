@@ -191,20 +191,17 @@ nav.main{display:none}
 body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 @media(min-width:1080px){body{padding-bottom:0}}
 
-/* ---- 分類開頭：只留大標（桌機加麵包屑），乾淨 ---- */
-.cat-head{padding-top:var(--s4);padding-bottom:var(--s4);text-align:center}
+/* ---- 分類開頭：大標＋兩行小字，同一個區塊、同一種留白，下面直接接工具列 ---- */
+.cat-head{padding-top:var(--s5);padding-bottom:var(--s5);text-align:center}
 .crumb{display:none;font-size:12.5px;color:var(--c-ink-3);margin-bottom:var(--s2)}
 @media(min-width:1080px){.crumb{display:block}}
 .crumb a:hover{color:var(--c-ink)}
 .cat-head h1{font-family:var(--f-title);font-size:var(--fs-h1);letter-spacing:.18em;text-indent:.18em}
-@media(min-width:1080px){.cat-head{padding-top:var(--s6);padding-bottom:var(--s5)}}
-
-/* ---- 回饋金：滿版細帶（同首頁優惠列語言），詞組斷行、不會破圖 ---- */
-.perks{background:var(--c-brand-bg);border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line)}
-.perks-in{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
-  gap:2px 12px;padding:8px var(--edge);font-size:12px;color:var(--c-brand-ink);
-  text-align:center;line-height:1.7}
-.perks b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums}
+.bonus-l1{margin-top:var(--s3);font-size:12.5px;color:var(--c-brand-ink);letter-spacing:.08em}
+/* 第二行鎖成一行：字距歸零、字級隨螢幕寬微縮（同結帳頁同意條款的做法） */
+.bonus-l2{margin-top:2px;font-family:var(--f-num);font-variant-numeric:tabular-nums;
+  color:var(--c-ink-2);letter-spacing:0;font-size:clamp(10.5px,3.1vw,12.5px);white-space:nowrap}
+@media(min-width:1080px){.cat-head{padding-top:var(--s6);padding-bottom:var(--s6)}}
 
 /* ---- 黏頂工具列 ---- */
 .toolbar{position:sticky;top:var(--hd-h);z-index:var(--z-sticky);background:rgba(250,250,248,.96);
@@ -242,9 +239,6 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .card .pr{font-family:var(--f-num);font-size:15.5px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
 .card .pr .sale{color:var(--c-sale)}
 .card .pr s{color:var(--c-ink-3);font-weight:400;font-size:13px;margin-left:6px}
-.color-dots{display:flex;gap:5px;margin-top:7px}
-.color-dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
-.color-dots .more-c{font-size:11px;color:var(--c-ink-3);line-height:1;align-self:center;margin-left:2px}
 
 /* 售完卡片：照樣顯示，接住補貨需求 */
 .card.sold .ph{opacity:.55}
@@ -365,15 +359,8 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="wrap cat-head">
   <p class="crumb"><a href="#">首頁</a>｜洋裝</p>
   <h1>洋裝</h1>
-</div>
-
-<div class="perks">
-  <div class="perks-in">
-    <span class="nb">回饋金加碼中</span>
-    <span class="nb">滿 <b>3,000</b> 贈 <b>100</b></span>
-    <span class="nb">滿 <b>5,000</b> 贈 <b>300</b></span>
-    <span class="nb">滿 <b>8,000</b> 贈 <b>600</b></span>
-  </div>
+  <p class="bonus-l1">連線回饋金加碼中</p>
+  <p class="bonus-l2">訂單滿 3,000 贈 100／滿 5,000 贈 300／滿 8,000 贈 600</p>
 </div>
 
 <div class="toolbar">
@@ -392,37 +379,31 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國瑞希拼接蕾絲洋裝</p>
       <p class="pr"><span class="sale">NT$1,600</span> <s>NT$1,880</s></p>
-      <div class="color-dots"><i style="background:#F5F2EA"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國采妮波點洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,650</span> <s>NT$1,880</s></p>
-      <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國瑞熙背心洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,250</span> <s>NT$1,480</s></p>
-      <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#C8BAA8"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
       <p class="nm">BS韓國點點細肩小洋裝</p>
       <p class="pr"><span class="sale">NT$980</span> <s>NT$1,280</s></p>
-      <div class="color-dots"><i style="background:#31415E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國艾莉光澤洋裝（三色）</p>
       <p class="pr"><span class="sale">NT$1,500</span> <s>NT$1,680</s></p>
-      <div class="color-dots"><i style="background:#D9C6B8"></i><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國敏真絲紗洋裝（兩色）</p>
       <p class="pr"><span class="sale">NT$1,300</span> <s>NT$1,580</s></p>
-      <div class="color-dots"><i style="background:#2E2E2E"></i><i style="background:#8A93A4"></i></div>
     </a>
     <a class="card sold" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="soldout">本批售完</span></div>
@@ -434,31 +415,26 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國腰間打褶長洋裝</p>
       <p class="pr"><span class="sale">NT$1,680</span> <s>NT$2,080</s></p>
-      <div class="color-dots"><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--stock">現貨</span></div>
       <p class="nm">BS韓國壓褶感傘擺洋裝</p>
       <p class="pr"><span class="sale">NT$1,580</span> <s>NT$1,980</s></p>
-      <div class="color-dots"><i style="background:#CDB8A6"></i><i style="background:#22282E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國雲霧雪紡長洋裝</p>
       <p class="pr"><span class="sale">NT$1,780</span> <s>NT$2,180</s></p>
-      <div class="color-dots"><i style="background:#EDE9DF"></i><i style="background:#8A93A4"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國方領小香洋裝</p>
       <p class="pr"><span class="sale">NT$1,880</span> <s>NT$2,280</s></p>
-      <div class="color-dots"><i style="background:#E5DDD2"></i><i style="background:#2E2E2E"></i></div>
     </a>
     <a class="card" href="#">
       <div class="ph" data-label="商品照 2:3"><span class="alt"></span><span class="badge badge--live">連線</span></div>
       <p class="nm">BS韓國荷葉領棉麻洋裝</p>
       <p class="pr"><span class="sale">NT$1,380</span> <s>NT$1,680</s></p>
-      <div class="color-dots"><i style="background:#F5F2EA"></i><i style="background:#9DA48E"></i><i style="background:#C8BAA8"></i><span class="more-c">+1</span></div>
     </a>
   </div>
 
