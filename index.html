@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FAFAF8">
-<title>首頁方向 A｜暖白畫廊｜BACKSTAGE</title>
+<title>BACKSTAGE｜韓國選品女裝</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
@@ -254,8 +254,6 @@ section{padding:var(--s5) 0 var(--s7)}
 .card .pr{font-family:var(--f-num);font-size:15.5px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
 .card .pr .sale{color:var(--c-sale)}
 .card .pr s{color:var(--c-ink-3);font-weight:400;font-size:13px;margin-left:6px}
-.dots{display:flex;gap:5px;margin-top:7px}
-.dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
 /* 全體欄位左右留白一致：商品格不貼邊，與其他區塊同邊距 */
 
 /* ---- 情境分類 ---- */
@@ -281,10 +279,10 @@ section{padding:var(--s5) 0 var(--s7)}
   padding:10px var(--edge) 12px;text-align:center}
 .perk-t{font-family:var(--f-title);font-size:13px;letter-spacing:.24em;text-indent:.24em;
   color:var(--c-brand-ink);font-weight:600}
-.perk-line{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;
+.perk-line{display:flex;flex-direction:column;align-items:center;gap:3px;
   font-size:12.5px;color:var(--c-ink-2)}
+@media(min-width:1080px){.perk-line{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px 18px}}
 .perk{white-space:nowrap}
-.perk:not(:first-child)::before{content:"／";margin-right:14px;color:var(--c-line-2)}
 .perk b{font-family:var(--f-num);font-weight:500;color:var(--c-brand-ink)}
 .nb{white-space:nowrap}
 .perk-note{font-size:11.5px;color:var(--c-ink-3)}
@@ -293,6 +291,7 @@ section{padding:var(--s5) 0 var(--s7)}
 }
 
 /* ---- 頁尾 ---- */
+@media(max-width:1079px){footer{display:none}}
 footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s7) 0 var(--s6)}
 .ft{display:grid;gap:var(--s6)}
 @media(min-width:720px){.ft{grid-template-columns:2fr 1fr 1fr 1fr}}
@@ -304,16 +303,6 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .ft-h .x{font-family:var(--f-num);font-size:15px;color:var(--c-ink-3)}
 .ft ul{list-style:none;margin:0;padding:0}
 .ft li{margin-bottom:10px}
-/* 手機頁尾全收合：點標題才展開，更整齊 */
-@media(max-width:1079px){
-  .ft{gap:0}
-  .ft .col{border-bottom:1px solid var(--c-line)}
-  .ft .col:first-of-type{border-top:1px solid var(--c-line);margin-top:var(--s5)}
-  .ft-h{padding:14px 0;margin-bottom:0;font-size:13.5px}
-  .ft .col ul{display:none;padding-bottom:var(--s3)}
-  .ft .col.open ul{display:block}
-  .ft .col.open .x{transform:rotate(45deg)}
-}
 @media(min-width:1080px){.ft-h{pointer-events:none}.ft-h .x{display:none}}
 .ft li a{font-size:13.5px;color:var(--c-ink-2)}
 .ft li a:hover{color:var(--c-ink)}
@@ -410,7 +399,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <div class="wrap perks-in">
     <p class="perk-t">連線期優惠</p>
     <p class="perk-line">
-      <span class="perk">滿 <b>NT$3,000</b> 加贈 <b>100元</b> 回饋金</span>
+      <span class="perk">滿 <b>NT$3,000</b> 贈 <b>100元</b> 回饋金</span>
       <span class="perk">滿 <b>NT$5,000</b> 贈 <b>300元</b> 回饋金</span>
       <span class="perk">滿 <b>NT$8,000</b> 贈 <b>600元</b> 回饋金</span>
     </p>
@@ -429,37 +418,31 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
         <div class="ph" data-label="商品照 2:3"><span class="tag live">連線</span></div>
         <p class="nm">垂墜感西裝寬褲（附綁帶）</p>
         <p class="pr"><span class="sale">NT$1,480</span> <s>NT$1,880</s></p>
-        <div class="dots"><i style="background:#C8BAA8"></i><i style="background:#3B3B3B"></i></div>
       </a>
       <a class="card" href="product.html">
         <div class="ph" data-label="商品照 2:3"><span class="tag live">連線</span></div>
         <p class="nm">雲朵感短版針織外套</p>
         <p class="pr"><span class="sale">NT$1,280</span> <s>NT$1,580</s></p>
-        <div class="dots"><i style="background:#EDE6DA"></i><i style="background:#B79A8A"></i><i style="background:#6E6E6E"></i></div>
       </a>
       <a class="card" href="product.html">
         <div class="ph" data-label="商品照 2:3"><span class="tag">現貨</span></div>
         <p class="nm">法式方領棉質上衣</p>
         <p class="pr"><span class="sale">NT$880</span> <s>NT$1,080</s></p>
-        <div class="dots"><i style="background:#FFFFFF"></i><i style="background:#D9C6B8"></i></div>
       </a>
       <a class="card" href="product.html">
         <div class="ph" data-label="商品照 2:3"><span class="tag live">連線</span></div>
         <p class="nm">腰間打褶長洋裝</p>
         <p class="pr"><span class="sale">NT$1,680</span> <s>NT$2,080</s></p>
-        <div class="dots"><i style="background:#9DA48E"></i><i style="background:#2E2E2E"></i></div>
       </a>
       <a class="card" href="product.html">
         <div class="ph" data-label="商品照 2:3"><span class="tag live">連線</span></div>
         <p class="nm">微光緞面半身裙</p>
         <p class="pr"><span class="sale">NT$1,180</span> <s>NT$1,480</s></p>
-        <div class="dots"><i style="background:#D9C6B8"></i><i style="background:#5B5B5B"></i></div>
       </a>
       <a class="card" href="product.html">
         <div class="ph" data-label="商品照 2:3"><span class="tag live">連線</span></div>
         <p class="nm">寬鬆落肩條紋上衣</p>
         <p class="pr"><span class="sale">NT$880</span> <s>NT$1,180</s></p>
-        <div class="dots"><i style="background:#F1EDE4"></i><i style="background:#31415E"></i></div>
       </a>
     </div>
     <div class="sec-foot"><a class="btn ghost" href="list.html">看全部商品</a></div>
