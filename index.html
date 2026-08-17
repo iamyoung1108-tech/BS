@@ -190,6 +190,17 @@ nav.main{display:none}
 .drawer .panel a{display:block;padding:14px 0;font-size:16px;border-bottom:1px solid var(--c-line)}
 .drawer .panel .sub{font-size:13px;color:var(--c-ink-3);margin-top:var(--s5)}
 .drawer .panel .sub a{display:inline;padding:0;font-size:inherit;border:0;color:var(--c-ink-2);text-decoration:underline;text-underline-offset:3px}
+/* 抽屜次要區：分類是主角（16px），服務與品牌資訊退一階（14px），不搶戲 */
+.drawer .cat-h{margin:0 0 2px;font-size:11.5px;font-weight:500;letter-spacing:.14em;color:var(--c-ink-3)}
+.drawer .sec{margin-top:var(--s5)}
+.drawer .sec h4{margin:0 0 2px;font-size:11.5px;font-weight:500;letter-spacing:.14em;
+  color:var(--c-ink-3)}
+.drawer .sec a{display:block;padding:9px 0;font-size:14px;color:var(--c-ink-2);border-bottom:0}
+.drawer .sec a:active{color:var(--c-ink)}
+.drawer .social{display:flex;gap:var(--s4)}
+.drawer .social a{padding:9px 0}
+.drawer .brand{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--c-line);
+  font-size:11.5px;color:var(--c-ink-3);line-height:1.9}
 
 /* ---- Hero：手機第一屏要看到首圖 3/4，文字區收緊 ---- */
 .hero{border-bottom:1px solid var(--c-line)}
@@ -327,10 +338,12 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <nav class="main">
       <a class="hot" href="list.html">本週連線</a>
       <a href="list.html">新品上架</a>
+      <a href="list.html">現貨</a>
       <a href="list.html">上衣</a>
       <a href="list.html">洋裝</a>
       <a href="list.html">褲・裙</a>
       <a href="list.html">外套</a>
+      <a href="list.html">包包・鞋子</a>
       <a href="list.html">飾品配件</a>
     </nav>
     <div class="hd-icons">
@@ -360,14 +373,28 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="drawer" id="drawer">
   <div class="mask" onclick="document.getElementById('drawer').classList.remove('open')"></div>
   <div class="panel">
+    <h4 class="cat-h">類別</h4>
     <a href="list.html" style="color:var(--c-brand-ink)">本週連線</a>
     <a href="list.html">新品上架</a>
+    <a href="list.html">現貨</a>
     <a href="list.html">上衣</a>
     <a href="list.html">洋裝</a>
     <a href="list.html">褲・裙</a>
     <a href="list.html">外套</a>
+    <a href="list.html">包包・鞋子</a>
     <a href="list.html">飾品配件</a>
-    <p class="sub"><a href="#">會員登入</a>・<a href="#">訂單查詢</a>・<a href="#">購物說明</a></p>
+    <div class="sec">
+      <h4>購物與服務</h4>
+      <a href="https://line.me/R/ti/p/@2bfabulous">LINE 客服</a>
+      <a href="#">我的訂單</a>
+      <a href="#">會員優惠</a>
+      <a href="https://www.backstagetime.com/privacy-policy">隱私權政策</a>
+    </div>
+    <div class="sec">
+      <h4>關於品牌</h4>
+      <a href="https://www.backstagetime.com/about">經營理念</a>
+    </div>
+    <p class="brand">韓國選品女裝・東大門直送<br>穿得自然輕鬆，帶點甜美不誇張<br>© 2026 BACKSTAGE 仰揚有限公司</p>
   </div>
 </div>
 
@@ -539,7 +566,6 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
         <button class="ft-h" onclick="this.parentElement.classList.toggle('open')">關於<span class="x">＋</span></button>
         <ul>
           <li><a href="#">品牌故事</a></li>
-          <li><a href="#">洋洋的部落格</a></li>
           <li><a href="#">連線行事曆</a></li>
         </ul>
       </div>
