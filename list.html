@@ -191,17 +191,17 @@ nav.main{display:none}
 body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 @media(min-width:1080px){body{padding-bottom:0}}
 
-/* ---- 分類開頭：大標＋兩行小字，同一個區塊、同一種留白，下面直接接工具列 ---- */
-.cat-head{padding-top:var(--s5);padding-bottom:var(--s5);text-align:center}
-.crumb{display:none;font-size:12.5px;color:var(--c-ink-3);margin-bottom:var(--s2)}
-@media(min-width:1080px){.crumb{display:block}}
-.crumb a:hover{color:var(--c-ink)}
-.cat-head h1{font-family:var(--f-title);font-size:var(--fs-h1);letter-spacing:.18em;text-indent:.18em}
-.bonus-l1{margin-top:var(--s3);font-size:12.5px;color:var(--c-brand-ink);letter-spacing:.08em}
+/* ---- 活動帶：棕底兩行，這一格是可換的活動欄位（連線期外由後台換文案）---- */
+.promo{background:var(--c-brand-bg);border-bottom:1px solid var(--c-line);
+  text-align:center;padding:10px var(--edge) 11px}
+.promo .l1{font-size:12.5px;color:var(--c-brand-ink);letter-spacing:.08em}
 /* 第二行鎖成一行：字距歸零、字級隨螢幕寬微縮（同結帳頁同意條款的做法） */
-.bonus-l2{margin-top:2px;font-family:var(--f-num);font-variant-numeric:tabular-nums;
-  color:var(--c-ink-2);letter-spacing:0;font-size:clamp(10.5px,3.1vw,12.5px);white-space:nowrap}
-@media(min-width:1080px){.cat-head{padding-top:var(--s6);padding-bottom:var(--s6)}}
+.promo .l2{margin-top:2px;font-family:var(--f-num);font-variant-numeric:tabular-nums;
+  color:var(--c-brand-ink);letter-spacing:0;font-size:clamp(10.5px,3.1vw,12.5px);white-space:nowrap}
+/* 分類鈕：與排序同列、同一種按鈕語言，字用思源宋標出「這裡是哪一區」 */
+.tool-btn.cat{font-family:var(--f-title);font-weight:600;letter-spacing:.1em}
+/* 手機排序鈕只顯示「排序」二字，值收起來，一列才擠得下 */
+@media(max-width:719px){.sort-v{display:none}}
 
 /* ---- 黏頂工具列 ---- */
 .toolbar{position:sticky;top:var(--hd-h);z-index:var(--z-sticky);background:rgba(250,250,248,.96);
@@ -217,6 +217,13 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .count{margin-left:auto;font-size:13px;color:var(--c-ink-3);white-space:nowrap}
 .count b{font-family:var(--f-num);font-weight:500;color:var(--c-ink-2)}
 @media(max-width:719px){.count .legend{display:none}}
+/* 窄機（SE 等）：間距與按鈕內距再收一階，一列鎖住不溢出 */
+@media(max-width:359px){
+  .toolbar-in{gap:8px}
+  .tool-btn{padding:0 9px;font-size:12.5px}
+  .tool-btn.cat{letter-spacing:.04em}
+  .count{font-size:11.5px}
+}
 
 /* ---- 商品格：手機 2 欄同邊距、平板 3、桌機 4 ---- */
 .list{padding-top:var(--s5);padding-bottom:var(--s7)}
@@ -356,16 +363,16 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   </div>
 </div>
 
-<div class="wrap cat-head">
-  <p class="crumb"><a href="#">首頁</a>｜洋裝</p>
-  <h1>洋裝</h1>
-  <p class="bonus-l1">連線回饋金加碼中</p>
-  <p class="bonus-l2">訂單滿 3,000 贈 100／滿 5,000 贈 300／滿 8,000 贈 600</p>
+<!-- 活動帶：連線期結束後這一格換其他活動文案，正式站由後台供應 -->
+<div class="promo">
+  <p class="l1">連線回饋金加碼中</p>
+  <p class="l2">訂單滿 3,000 贈 100／滿 5,000 贈 300／滿 8,000 贈 600</p>
 </div>
 
 <div class="toolbar">
   <div class="wrap toolbar-in">
-    <button class="tool-btn" id="sortBtn" onclick="nextSort()">排序：本週推薦 <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="tool-btn cat" onclick="document.getElementById('drawer').classList.add('open')">洋裝 <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="tool-btn" id="sortBtn" onclick="nextSort()">排序<span class="sort-v" id="sortVal">：本週推薦</span> <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
     <button class="tool-btn" onclick="document.getElementById('filter').classList.add('open')">
       篩選 <span class="on" id="fCount" hidden>1</span>
     </button>
@@ -529,7 +536,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 var sorts=['本週推薦','上架時間','價格低到高','價格高到低'],si=0;
 function nextSort(){
   si=(si+1)%sorts.length;
-  document.getElementById('sortBtn').innerHTML='排序：'+sorts[si]+' <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+  document.getElementById('sortVal').textContent='：'+sorts[si];
 }
 /* 篩選數量小紅點 */
 function fTick(){
