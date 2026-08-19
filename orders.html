@@ -15,7 +15,8 @@
    規則：
    - 訂單查詢一律先過手機驗證（三條安全規則第 3 條），全站不出現「登入／註冊」
    - 僅顯示近一年訂單，更早的導 LINE 客服
-   - 購物金（斷貨退回）與回饋金（滿額回饋）是分開的兩筆，規則不同（洋 8/19 定）
+   - 購物金＝斷貨退款等同現金（無門檻無期限）；回饋金＝一張一張的券，滿 1,000 可折、60 天、下筆才能用、不可合併
+   - 一筆訂單只能用一種折抵：購物金／一張回饋金／一張折價券／一個優惠碼，四選一（洋 8/19 定）
    - 優惠券與折扣碼只列目前可用的（洋 8/19 定）
    - 訂單狀態四段（洋 8/19 定）：訂單成立 → 採購中 → 包裝中 → 已出貨
    - 介面文字不用句號、說明限一行
@@ -383,23 +384,30 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <div class="b">
       <h3>購物金</h3>
       <p class="amt"><small>NT$</small>690</p>
-      <p>斷貨退回的金額，結帳時直接折抵</p>
+      <p>斷貨退回等同現金，無門檻無期限</p>
     </div>
     <div class="b">
       <h3>回饋金</h3>
-      <p class="amt"><small>NT$</small>300</p>
-      <p>連線滿額回饋，一單一張、與折扣碼擇一</p>
+      <p class="amt">2<small style="margin-left:4px;margin-right:0">張</small></p>
+      <p>訂單滿千即可直接折抵</p>
     </div>
   </div>
 
   <!-- 只列目前可用的（洋 8/19 定：不放已使用與過期紀錄） -->
-  <div class="sec-h"><h2>可用優惠</h2><span>2 張</span></div>
+  <div class="sec-h"><h2>可用優惠</h2><span>3 張</span></div>
   <div class="coupons">
     <div class="cp">
       <div class="val"><b>NT$300</b><span>回饋金</span></div>
       <div class="info">
         <p>8 月連線滿額回饋</p>
-        <small>結帳勾選折抵・<b>9/30</b> 前有效・與折扣碼擇一</small>
+        <small>滿千可折・<b>9/30</b> 前有效・單筆訂單折抵</small>
+      </div>
+    </div>
+    <div class="cp">
+      <div class="val"><b>NT$100</b><span>回饋金</span></div>
+      <div class="info">
+        <p>7 月連線滿額回饋</p>
+        <small>滿千可折・<b>9/15</b> 前有效・單筆訂單折抵</small>
       </div>
     </div>
     <div class="cp">
