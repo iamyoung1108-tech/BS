@@ -523,6 +523,19 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* ===== 電腦版頁尾（8/19 定稿：抽屜同一份＋跟著洋洋兩連結，手機隱藏）===== */
+footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s7) 0 var(--s6)}
+@media(max-width:1079px){footer{display:none}}
+.ftg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:var(--s6)}
+.ftb .logo{font-family:var(--f-title);font-size:18px;font-weight:600;letter-spacing:.22em;margin:0 0 10px}
+.ftb .logo small{font-family:var(--f-body);font-size:11.5px;font-weight:400;letter-spacing:.14em;color:var(--c-ink-3)}
+.ftb p{font-size:12.5px;color:var(--c-ink-3);line-height:1.9}
+.ftc h4{margin:0 0 10px;font-size:11.5px;font-weight:500;letter-spacing:.14em;color:var(--c-ink-3)}
+.ftc a{display:block;padding:5px 0;font-size:14px;color:var(--c-ink);transition:color var(--dur) var(--ease)}
+.ftc a:hover{color:var(--c-brand-ink)}
+.ftcopy{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--c-line);
+  font-size:11.5px;color:var(--c-ink-3)}
 </style>
 </head>
 <body>
@@ -589,7 +602,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <h4>關於品牌</h4>
       <a href="https://www.backstagetime.com/about">經營理念</a>
     </div>
-    <p class="brand">韓國選品女裝・東大門直送<br>穿得自然輕鬆，帶點甜美不誇張<br>© 2026 BACKSTAGE 仰揚有限公司</p>
+    <p class="brand">BACKSTAGE・Seoul Select<br>首爾東大門嚴選直送<br>百搭實穿・微甜細節・親膚質地<br>把美好穿成生活日常<br>© 2026 BACKSTAGE 仰揚有限公司</p>
   </div>
 </div>
 
@@ -868,8 +881,31 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 </div>
 
 <footer>
-  <div class="wrap copy">
-    <span>© 2026 BACKSTAGE</span><span>仰揚有限公司</span><span>連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</span>
+  <div class="wrap">
+    <div class="ftg">
+      <div class="ftb">
+        <p class="logo">BACKSTAGE<small>・Seoul Select</small></p>
+        <p>首爾東大門嚴選直送<br>百搭實穿・微甜細節・親膚質地<br>把美好穿成生活日常</p>
+      </div>
+      <div class="ftc">
+        <h4>購物與服務</h4>
+        <a href="https://line.me/R/ti/p/@2bfabulous" target="_blank" rel="noopener">LINE 客服</a>
+        <a href="orders.html">我的訂單</a>
+        <a href="#">會員優惠</a>
+        <a href="https://www.backstagetime.com/privacy-policy">隱私權政策</a>
+      </div>
+      <div class="ftc">
+        <h4>關於品牌</h4>
+        <a href="https://www.backstagetime.com/about">經營理念</a>
+      </div>
+      <div class="ftc">
+        <h4>跟著洋洋</h4>
+        <!-- 只放這兩個，不再加其他（洋 8/19 定）-->
+        <a href="https://www.instagram.com/yangyounglove/">Instagram</a>
+        <a href="https://www.facebook.com/yangyounglove/">Facebook</a>
+      </div>
+    </div>
+    <p class="ftcopy">© 2026 BACKSTAGE 仰揚有限公司・連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</p>
   </div>
 </footer>
 
