@@ -4,23 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FAFAF8">
-<title>我的訂單｜BACKSTAGE</title>
+<title>經營理念｜BACKSTAGE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   BACKSTAGE 我的訂單 · v1（洋 8/19 需求）
-   唯一任務：老客 30 秒內查到「訂單走到哪、斷貨退了多少購物金、手上有什麼可以折」
-   規則：
-   - 訂單查詢一律先過手機驗證（三條安全規則第 3 條），全站不出現「登入／註冊」
-   - 僅顯示近一年訂單，更早的導 LINE 客服
-   - 購物金＝斷貨退款等同現金（無門檻無期限）；回饋金＝一張一張的券，滿 1,000 可折、60 天、下筆才能用、不可合併
-   - 一筆訂單只能用一種折抵：購物金／一張回饋金／一張折價券／一個優惠碼，四選一（洋 8/19 定）
-   - 優惠券與折扣碼只列目前可用的（洋 8/19 定）
-   - 訂單狀態四段（洋 8/19 定）：訂單成立 → 採購中 → 包裝中 → 已出貨
-   - 介面文字不用句號、說明限一行
-   本頁為 DEMO：驗證碼任意 6 碼可過，資料皆為示意，正式站接後台
+   BACKSTAGE 經營理念 · v1（8/19 由舊站內容移植進新版設計）
+   品牌故事文字為洋原文，不改寫；代購須知／發票／客服照舊站內容
    ============================================================ */
 /* ===== BACKSTAGE Design Tokens v1 — 全站共用，勿在單頁另外定義 ===== */
 :root{
@@ -299,6 +290,19 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .ftc a:hover{color:var(--c-brand-ink)}
 .ftcopy{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--c-line);
   font-size:11.5px;color:var(--c-ink-3)}
+
+/* ---- 文字頁（隱私權政策／經營理念）---- */
+.prose h2{font-size:16px;font-weight:500;letter-spacing:.04em;margin:var(--s6) 0 var(--s2)}
+.prose h2:first-of-type{margin-top:var(--s4)}
+.prose p{font-size:14.5px;color:var(--c-ink-2);line-height:1.95;margin:0 0 var(--s3)}
+.prose ul{margin:0 0 var(--s3);padding-left:1.2em}
+.prose li{font-size:14.5px;color:var(--c-ink-2);line-height:1.95}
+.prose b{color:var(--c-ink);font-weight:500}
+.prose .slogan{font-family:var(--f-num);font-size:12px;letter-spacing:.18em;color:var(--c-brand-ink);margin:4px 0 var(--s5)}
+.prose .story{font-family:var(--f-title);font-size:16.5px;line-height:2.1;color:var(--c-ink);margin:0 0 var(--s6)}
+.prose .kv{margin:var(--s2) 0 0;padding:var(--s3) var(--s4);background:var(--c-surface-2);border-radius:var(--r-sm);
+  font-size:13.5px;color:var(--c-ink-2);line-height:2}
+.prose .kv b{font-family:var(--f-num);letter-spacing:.03em}
 </style>
 </head>
 <body>
@@ -347,224 +351,36 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <div class="sec">
       <h4>購物與服務</h4>
       <a href="https://line.me/R/ti/p/@2bfabulous" target="_blank" rel="noopener">LINE 客服</a>
-      <a href="orders.html" class="now">我的訂單</a>
+      <a href="orders.html">我的訂單</a>
       <a href="#">會員優惠</a>
       <a href="privacy.html">隱私權政策</a>
     </div>
     <div class="sec">
       <h4>關於品牌</h4>
-      <a href="about.html">經營理念</a>
+      <a href="about.html" class="now">經營理念</a>
     </div>
     <p class="brand">BACKSTAGE・Seoul Select<br>首爾東大門嚴選直送<br>百搭實穿・微甜細節・親膚質地<br>把美好穿成生活日常<br>© 2026 BACKSTAGE 仰揚有限公司</p>
   </div>
 </div>
 
 <main>
+<div class="pg-h"><h1>經營理念</h1></div>
+<article class="prose">
+<p class="slogan">BACKSTAGE・IT'S TIME TO BE FABULOUS</p>
+<p class="story">曾經，Backstage 是我們共同築夢的舞台，記錄了無數個美麗瞬間。經歷了十年的成長與沉澱，我們曾思考過收尾，卻在 2025 年冬天的熱烈迴響中，重新看見了喜愛的力量</p>
+<p class="story">我們意識到，大家喜愛的或許不只是一個品牌名稱，而是那份「跟著洋洋一起變美」的默契。因此，今年我們想讓一切回歸到洋洋的眼光，讓本站成為「洋洋選品」的起點</p>
+<p class="story">每一件衣服、每一個搭配，都是洋洋親自挑選、試穿、感受後的生活提案。想分享的不只是流行，而是一種忠於自我、舒服自在的生活態度。歡迎來到這裡，看看洋洋為你挑選的日常美好</p>
 
-<!-- ========== 狀態一：手機驗證（任何舊資料只能在驗證成功之後） ========== -->
-<section id="stepVerify">
-  <div class="pg-h">
-    <h1>我的訂單</h1>
-    <p>輸入手機號碼收驗證碼，就能查訂單、購物金與優惠</p>
-  </div>
-  <div class="vcard" id="phoneCard">
-    <label for="tel">手機號碼</label>
-    <input class="tf" id="tel" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="09xx xxx xxx">
-    <button class="btn-main" id="sendBtn" onclick="sendCode()">傳送驗證碼</button>
-    <p class="v-note">為保護妳的購買資料，驗證通過才會顯示訂單</p>
-  </div>
-  <div class="vcard hide" id="otpCard">
-    <p class="v-sent">驗證碼已傳送至 <b id="sentTo">0912 345 678</b><a href="#" onclick="backToPhone();return false">改號碼</a></p>
-    <div class="otp" id="otpBox">
-      <input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1">
-    </div>
-    <p class="resend">沒收到？<button id="resendBtn" disabled onclick="sendCode()">重新傳送（<span id="cdn">60</span>）</button></p>
-  </div>
-</section>
+<h2>韓國商品代購代訂</h2>
+<p>BACKSTAGE 系列商品皆屬於<b>海外代購代訂模式</b>，收到訂單後再向韓國訂購。<b>代購商品不適用於七天鑑賞期</b>，沒有試用、保固和退換，也無法受理「選錯尺寸」「實品與想像不同」而要求退換貨品，請下單前務必了解</p>
+<p>商品出貨前皆會仔細檢查，若有疏忽未檢查到的地方，請於商品未減標、未過水、保持全新狀態時，收到商品後第一時間與我們聯繫更換。國外買家恕無法提供瑕疵退換服務</p>
 
-<!-- ========== 狀態二：驗證通過後的訂單總覽（DEMO 資料，正式站接後台） ========== -->
-<section id="stepDash" class="hide">
-  <div class="pg-h">
-    <h1>我的訂單</h1>
-  </div>
-  <div class="who">
-    <p>已驗證 <b id="whoTel">0912***678</b></p>
-    <button onclick="logoutMock()">換一支號碼查詢</button>
-  </div>
+<h2>電子發票</h2>
+<p>官網使用電子發票系統，出貨完成時發票會直接寄到您的信箱，下單時請務必確認信箱正確。仰揚有限公司／統編 <b>28238418</b></p>
 
-  <!-- 兩筆餘額：購物金（斷貨退回）與回饋金（滿額回饋）分開、規則不同 -->
-  <div class="bal">
-    <div class="b">
-      <h3>購物金</h3>
-      <p class="amt"><small>NT$</small>690</p>
-      <p>斷貨購物金一年內使用完成</p>
-    </div>
-    <div class="b">
-      <h3>回饋金</h3>
-      <p class="amt">2<small style="margin-left:4px;margin-right:0">張</small></p>
-      <p>訂單滿千即可直接折抵</p>
-    </div>
-  </div>
-
-  <!-- 只列目前可用的（洋 8/19 定：不放已使用與過期紀錄） -->
-  <div class="sec-h"><h2>可用優惠</h2><span>3 張</span></div>
-  <div class="coupons">
-    <div class="cp">
-      <div class="val"><b>NT$300</b><span>回饋金</span></div>
-      <div class="info">
-        <p>8 月連線滿額回饋</p>
-        <small>滿千可折・<b>9/30</b> 前有效・單筆訂單折抵</small>
-      </div>
-    </div>
-    <div class="cp">
-      <div class="val"><b>NT$100</b><span>回饋金</span></div>
-      <div class="info">
-        <p>7 月連線滿額回饋</p>
-        <small>滿千可折・<b>9/15</b> 前有效・單筆訂單折抵</small>
-      </div>
-    </div>
-    <div class="cp">
-      <div class="val"><b>NT$100</b><span>折扣碼</span></div>
-      <div class="info">
-        <p>換季感謝碼 <code>BS100</code></p>
-        <small>滿 NT$2,000 可用・<b>8/31</b> 前有效</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- 近一年訂單 -->
-  <div class="sec-h"><h2>訂單</h2></div>
-  <div class="orders">
-
-    <!-- 1. 採購中 -->
-    <div class="oc" id="o1">
-      <button class="oc-head" onclick="toggleOrder('o1')">
-        <div class="no"><b>BS-260812034</b><small>2026/08/12</small></div>
-        <span class="st doing">採購中</span>
-        <span class="tot">NT$3,280</span>
-        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="oc-body">
-        <div class="tl">
-          <span class="t done">訂單成立</span><span class="t cur">採購中</span><span class="t">包裝中</span><span class="t">已出貨</span>
-        </div>
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>雲朵感針織罩衫</p><small>奶茶・F</small></div>
-          <span class="pr">NT$1,680</span>
-        </div>
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>垂墜直筒寬褲</p><small>黑・M</small></div>
-          <span class="pr">NT$1,600</span>
-        </div>
-        <div class="sum">
-          <div class="r"><span>小計</span><b>NT$3,280</b></div>
-          <div class="r"><span>運費（滿 3,000 免運）</span><b>NT$0</b></div>
-          <div class="r pay"><span>實付金額</span><b>NT$3,280</b></div>
-        </div>
-        <p class="shipto">7-11 富錦門市取貨・出貨後提供取貨編號</p>
-      </div>
-    </div>
-
-    <!-- 2. 已出貨，其中一件斷貨退購物金 -->
-    <div class="oc" id="o2">
-      <button class="oc-head" onclick="toggleOrder('o2')">
-        <div class="no"><b>BS-260801016</b><small>2026/08/01</small></div>
-        <span class="st ship">已出貨</span>
-        <span class="tot">NT$3,460</span>
-        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <p class="oc-flag">1 件斷貨・<b>NT$690</b> 已退回購物金</p>
-      <div class="oc-body">
-        <div class="tl">
-          <span class="t done">訂單成立</span><span class="t done">採購中</span><span class="t done">包裝中</span><span class="t cur">已出貨</span>
-        </div>
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>木耳邊雪紡襯衫</p><small>象牙白・F</small></div>
-          <span class="pr">NT$1,480</span>
-        </div>
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>鬆緊腰傘襬長裙</p><small>燕麥・F</small></div>
-          <span class="pr">NT$1,980</span>
-        </div>
-        <div class="it out">
-          <div class="ph"></div>
-          <div class="d">
-            <p>細帶方領背心</p><small>杏・F</small>
-            <span class="oud">韓國斷貨 <b>NT$690</b> 已退回購物金</span>
-            <span class="ok-line"><b>8/14</b> 入帳，結帳時可直接折抵</span>
-          </div>
-          <span class="pr">NT$690</span>
-        </div>
-        <div class="sum">
-          <div class="r"><span>小計（3 件）</span><b>NT$4,150</b></div>
-          <div class="r minus"><span>斷貨退回購物金</span><b>−NT$690</b></div>
-          <div class="r"><span>運費（滿 3,000 免運）</span><b>NT$0</b></div>
-          <div class="r pay"><span>實付金額</span><b>NT$3,460</b></div>
-        </div>
-        <p class="shipto">黑貓宅配・配送單號 <b>903-2214-5860</b>・8/17 出貨</p>
-      </div>
-    </div>
-
-    <!-- 3. 已出貨（歷史單） -->
-    <div class="oc" id="o3">
-      <button class="oc-head" onclick="toggleOrder('o3')">
-        <div class="no"><b>BS-260619008</b><small>2026/06/19</small></div>
-        <span class="st done">已出貨</span>
-        <span class="tot">NT$2,680</span>
-        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="oc-body">
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>抓皺短袖洋裝</p><small>灰藍・F</small></div>
-          <span class="pr">NT$1,780</span>
-        </div>
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>珍珠釦針織小外套</p><small>白・F</small></div>
-          <span class="pr">NT$900</span>
-        </div>
-        <div class="sum">
-          <div class="r"><span>小計</span><b>NT$2,680</b></div>
-          <div class="r"><span>運費（7-11 取貨）</span><b>NT$60</b></div>
-          <div class="r minus"><span>回饋金折抵</span><b>−NT$100</b></div>
-          <div class="r pay"><span>實付金額</span><b>NT$2,640</b></div>
-        </div>
-        <p class="shipto">7-11 富錦門市取貨・取貨編號 <b>F231 0824 6617</b>・6/30 取件完成</p>
-      </div>
-    </div>
-
-    <!-- 4. 去年（仍在一年內） -->
-    <div class="oc" id="o4">
-      <button class="oc-head" onclick="toggleOrder('o4')">
-        <div class="no"><b>BS-251102021</b><small>2025/11/02</small></div>
-        <span class="st done">已出貨</span>
-        <span class="tot">NT$1,580</span>
-        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="oc-body">
-        <div class="it">
-          <div class="ph"></div>
-          <div class="d"><p>高領坑條針織上衣</p><small>可可・F</small></div>
-          <span class="pr">NT$1,580</span>
-        </div>
-        <div class="sum">
-          <div class="r"><span>小計</span><b>NT$1,580</b></div>
-          <div class="r"><span>運費（7-11 取貨）</span><b>NT$60</b></div>
-          <div class="r pay"><span>實付金額</span><b>NT$1,640</b></div>
-        </div>
-        <p class="shipto">7-11 民生門市取貨・取貨編號 <b>F229 5511 0348</b>・11/15 取件完成</p>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
+<h2>官方客服</h2>
+<p class="kv">LINE 官方帳號 <b>@2bfabulous</b>（優先處理）<br>客服電話 <b>02-2823-8418</b><br>客服信箱 <b>backstagetime@gmail.com</b><br>服務時間 週一至週五 <b>10:00–18:00</b></p>
+</article>
 </main>
 
 <footer>
@@ -583,7 +399,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       </div>
       <div class="ftc">
         <h4>關於品牌</h4>
-        <a href="about.html">經營理念</a>
+        <a href="about.html" class="now">經營理念</a>
       </div>
       <div class="ftc">
         <h4>跟著洋洋</h4>
@@ -601,11 +417,11 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <a href="#" onclick="document.getElementById('drawer').classList.add('open');return false"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>分類</a>
   <a href="favorites.html"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></span>收藏</a>
   <a href="checkout.html"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n">2</span></span>購物車</a>
-  <a href="orders.html" class="on"><span class="tb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>會員</a>
+  <a href="orders.html"><span class="tb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>會員</a>
 </nav>
 
 <script>
-/* 加碼倒數：改 data-deadline 即可換期（不是收單截止，過期照常販售） */
+/* 加碼倒數：改 data-deadline 即可換期 */
 (function(){
   var els=document.querySelectorAll('.cd');if(!els.length)return;
   function pad(n){return n<10?'0'+n:n}
@@ -620,85 +436,6 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   }
   tick();setInterval(tick,1000);
 })();
-
-/* ===== 驗證流程 DEMO =====
-   正式站規則（三條安全規則）：
-   1) 任何舊資料回填或查詢一律在驗證成功之後
-   2) 不論號碼有無購買紀錄一律照發驗證碼，驗證通過才分岔
-   3) 訂單查詢走同一套手機驗證，驗證狀態綁號碼               */
-var cdTimer=null;
-function fmtTel(t){return t.replace(/(\d{4})(\d{3})(\d{3})/,'$1 $2 $3')}
-function sendCode(){
-  var tel=document.getElementById('tel').value.replace(/\D/g,'');
-  if(!/^09\d{8}$/.test(tel)){
-    document.getElementById('tel').focus();
-    document.getElementById('tel').style.borderColor='var(--c-err)';
-    return;
-  }
-  document.getElementById('tel').style.borderColor='';
-  document.getElementById('sentTo').textContent=fmtTel(tel);
-  document.getElementById('phoneCard').classList.add('hide');
-  document.getElementById('otpCard').classList.remove('hide');
-  document.getElementById('otpBox').querySelector('input').focus();
-  var n=60,btn=document.getElementById('resendBtn'),cdn=document.getElementById('cdn');
-  btn.disabled=true;cdn.textContent=n;
-  clearInterval(cdTimer);
-  cdTimer=setInterval(function(){
-    n--;cdn.textContent=n;
-    if(n<=0){clearInterval(cdTimer);btn.disabled=false;btn.textContent='重新傳送'}
-  },1000);
-}
-function backToPhone(){
-  document.getElementById('otpCard').classList.add('hide');
-  document.getElementById('phoneCard').classList.remove('hide');
-  clearInterval(cdTimer);
-}
-/* OTP：自動跳格，6 碼滿即驗證（DEMO 任意 6 碼通過） */
-(function(){
-  var box=document.getElementById('otpBox'),ins=box.querySelectorAll('input');
-  ins.forEach(function(inp,i){
-    inp.addEventListener('input',function(){
-      inp.value=inp.value.replace(/\D/g,'').slice(0,1);
-      if(inp.value&&i<ins.length-1)ins[i+1].focus();
-      var code=Array.prototype.map.call(ins,function(x){return x.value}).join('');
-      if(code.length===6)verified();
-    });
-    inp.addEventListener('keydown',function(e){
-      if(e.key==='Backspace'&&!inp.value&&i>0)ins[i-1].focus();
-    });
-  });
-})();
-/* 驗證過就不再驗證（省簡訊費）：正式站由後台登入狀態控制，
-   驗證綁手機號碼、有效期建議 180 天，僅換號碼或逾期才重發驗證碼。
-   DEMO 用瀏覽器記憶示意同一行為 */
-function verified(){
-  var tel=document.getElementById('tel').value.replace(/\D/g,'');
-  showDash(tel);
-  try{localStorage.setItem('bs_tel',tel)}catch(e){}
-  clearInterval(cdTimer);
-}
-function showDash(tel){
-  document.getElementById('whoTel').textContent=tel.slice(0,4)+'***'+tel.slice(7);
-  document.getElementById('stepVerify').classList.add('hide');
-  document.getElementById('stepDash').classList.remove('hide');
-  window.scrollTo(0,0);
-}
-(function(){
-  try{
-    var t=localStorage.getItem('bs_tel');
-    if(t&&/^09\d{8}$/.test(t))showDash(t);
-  }catch(e){}
-})();
-function logoutMock(){
-  try{localStorage.removeItem('bs_tel')}catch(e){}
-  document.getElementById('stepDash').classList.add('hide');
-  document.getElementById('stepVerify').classList.remove('hide');
-  backToPhone();
-  document.getElementById('tel').value='';
-  document.getElementById('otpBox').querySelectorAll('input').forEach(function(x){x.value=''});
-  window.scrollTo(0,0);
-}
-function toggleOrder(id){document.getElementById(id).classList.toggle('open')}
 </script>
 </body>
 </html>
