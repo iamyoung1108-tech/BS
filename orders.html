@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFAF8">
+<title>我的訂單｜BACKSTAGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BACKSTAGE 我的訂單 · v1（洋 8/19 需求）
+   唯一任務：老客 30 秒內查到「訂單走到哪、斷貨退了多少購物金、手上有什麼可以折」
+   規則：
+   - 訂單查詢一律先過手機驗證（三條安全規則第 3 條），全站不出現「登入／註冊」
+   - 僅顯示近一年訂單，更早的導 LINE 客服
+   - 購物金（斷貨退回）與回饋金（滿額回饋）是分開的兩筆，規則不同（洋 8/19 定）
+   - 優惠券與折扣碼只列目前可用的（洋 8/19 定）
+   - 訂單狀態用人話：已收到訂單 → 韓國採購中 → 已到台灣倉 → 已出貨 → 已完成
+   - 介面文字不用句號、說明限一行
+   本頁為 DEMO：驗證碼任意 6 碼可過，資料皆為示意，正式站接後台
+   ============================================================ */
+/* ===== BACKSTAGE Design Tokens v1 — 全站共用，勿在單頁另外定義 ===== */
+:root{
+  --c-bg:#FAFAF8; --c-surface:#FFFFFF; --c-surface-2:#F6F5F1;
+  --c-ink:#1F1F1D; --c-ink-2:#5A5A56; --c-ink-3:#8B8B85;
+  --c-line:#E9E7E2; --c-line-2:#D6D2CB;
+  --c-brand:#A8837C; --c-brand-bg:#F4EEEB; --c-brand-ink:#6B4F49;
+  --c-action:#1F1F1D; --c-action-on:#FFFFFF;
+  --c-sale:#C0392B; --c-sale-bg:#FCEFEE;
+  --c-err:#C0392B;  --c-err-bg:#FCEFEE;
+  --c-ok:#2E7D4F;   --c-ok-bg:#EDF5F0;
+  --c-warn:#8A6D3B; --c-warn-bg:#FAF4E8;
+  --f-title:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+  --f-body:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-num:"Inter","Noto Sans TC",sans-serif;
+  --fs-hero:29px; --fs-h1:22px; --fs-h2:17px;
+  --fs-body:15px; --fs-sm:13.5px; --fs-xs:12.5px; --fs-2xs:11.5px;
+  --fs-price:20px; --fs-input:16px;
+  --lh-body:1.8; --lh-tight:1.4; --lh-dense:1.6;
+  --ls-body:.02em; --ls-title:.12em; --ls-mark:.22em;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  --r-sm:2px; --r-md:8px; --r-pill:100px;
+  --shadow-soft:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+  --h-btn:52px; --h-btn-2:48px; --h-btn-3:44px; --h-btn-mini:36px;
+  --max-w:1360px; --max-w-flow:1040px; --max-w-form:600px; --edge:12px;
+  --z-raise:10; --z-sticky:20; --z-header:30; --z-bottom:35;
+  --z-drawer:40; --z-modal:50; --z-sheet:55; --z-toast:60; --z-overlay:70;
+  --dur:.2s; --ease:cubic-bezier(.4,0,.2,1);
+}
+@media(min-width:720px){:root{--edge:20px}}
+@media(min-width:1080px){:root{--edge:36px; --fs-hero:48px; --fs-h1:28px; --fs-price:24px}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html,body{overflow-x:clip}
+body{
+  background:var(--c-bg);color:var(--c-ink);
+  font-family:var(--f-body);font-size:15px;
+  line-height:var(--lh-body);letter-spacing:var(--ls-body);
+  font-synthesis:none;font-feature-settings:"palt" 1;line-break:strict;
+  text-spacing-trim:trim-start;text-autospace:normal;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;font-weight:500;line-height:var(--lh-tight);text-wrap:balance}
+p{margin:0;text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 var(--edge)}
+.nb{white-space:nowrap}
+
+/* ---- 商品照占位（正式版換真實商品照 2:3）---- */
+.ph{position:relative;aspect-ratio:2/3;border-radius:var(--r-sm);overflow:hidden;
+  background:linear-gradient(160deg,#EFEDE8 0%,#E4DFD6 60%,#DAD2C5 100%)}
+
+/* ---- 公告列 ---- */
+.notice{background:var(--c-ink);color:#EDEBE6;font-size:12.5px;text-align:center;
+  padding:9px var(--edge);letter-spacing:.04em}
+.notice b{font-family:var(--f-num);font-weight:500}
+.notice .cd{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+/* ---- 頁首（本頁為查詢工具：手機不放常駐搜尋列，頁首收薄）---- */
+:root{--hd-h:56px}
+@media(min-width:1080px){:root{--hd-h:68px}}
+header{position:sticky;top:0;z-index:var(--z-header);background:rgba(250,250,248,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--c-line)}
+.hd{display:flex;align-items:center;height:56px;gap:var(--s4);position:relative}
+.logo{font-family:var(--f-title);font-size:19px;font-weight:600;letter-spacing:.22em;text-indent:.22em}
+.hd .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+@media(min-width:1080px){.hd .logo{position:static;transform:none}}
+.hd-icons{display:flex;align-items:center;gap:2px;margin-left:auto}
+.icon-btn{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--c-ink)}
+.icon-btn svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.5;fill:none}
+.cart-n{position:absolute;top:6px;right:4px;min-width:16px;height:16px;border-radius:8px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+.burger{width:44px;height:44px;background:none;border:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px}
+.burger span{width:20px;height:1.5px;background:var(--c-ink)}
+.icon-btn.member{display:none}
+@media(min-width:1080px){.icon-btn.member{display:flex}}
+nav.main{display:none}
+@media(min-width:1080px){
+  .burger{display:none}
+  .hd{height:68px}
+  .logo{font-size:22px}
+  nav.main{display:flex;gap:var(--s6);margin-left:var(--s7);font-size:14px}
+  nav.main a{padding:6px 0;border-bottom:1px solid transparent;transition:border-color var(--dur) var(--ease)}
+  nav.main a:hover{border-color:var(--c-ink)}
+  nav.main a.hot{color:var(--c-brand-ink)}
+}
+/* 手機抽屜選單（與三頁同一份，間距規格 8/19 定稿）*/
+.drawer{position:fixed;inset:0;z-index:var(--z-drawer);display:none}
+.drawer.open{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(31,31,29,.35)}
+.drawer .panel{position:absolute;top:0;left:0;bottom:0;width:min(320px,84vw);background:var(--c-surface);
+  padding:var(--s6) var(--s5);overflow-y:auto}
+.drawer .panel a{display:block;padding:8px 0;font-size:15px;line-height:1.4;color:var(--c-ink);border-bottom:0}
+.drawer .panel a.now{color:var(--c-brand-ink)}
+.drawer .panel a:active{color:var(--c-ink-2)}
+.drawer h4{margin:0 0 2px;font-size:11.5px;font-weight:500;letter-spacing:.14em;color:var(--c-ink-3)}
+.drawer .sec{margin-top:var(--s5)}
+.drawer .brand{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--c-line);
+  font-size:11.5px;color:var(--c-ink-3);line-height:1.9}
+
+/* ---- 底部分頁列（五格同全站）---- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bottom);display:grid;grid-template-columns:repeat(5,1fr);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--c-line);
+  padding-bottom:env(safe-area-inset-bottom)}
+.tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;
+  font-size:10.5px;color:var(--c-ink-3);letter-spacing:.04em}
+.tabbar a.on{color:var(--c-ink)}
+.tabbar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
+.tabbar .tb-ic{position:relative}
+.tabbar .n{position:absolute;top:-4px;right:-9px;min-width:15px;height:15px;border-radius:8px;
+  background:var(--c-brand);color:#fff;font-family:var(--f-num);font-size:9.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+@media(min-width:1080px){.tabbar{display:none}}
+
+/* ============ 本頁內容 ============ */
+main{max-width:640px;margin:0 auto;padding:var(--s5) var(--edge) calc(var(--s8) + 56px)}
+@media(min-width:1080px){main{padding-bottom:var(--s8)}}
+.pg-h{margin-bottom:var(--s4)}
+.pg-h h1{font-family:var(--f-title);font-size:var(--fs-h1);letter-spacing:.08em}
+.pg-h p{margin-top:4px;font-size:var(--fs-sm);color:var(--c-ink-2)}
+
+/* ---- 驗證卡 ---- */
+.vcard{background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--r-md);
+  padding:var(--s5) var(--s4)}
+.vcard label{display:block;font-size:var(--fs-xs);color:var(--c-ink-2);margin-bottom:6px}
+.vcard .row{display:flex;gap:var(--s2)}
+.tf{width:100%;height:var(--h-btn-2);border:1px solid var(--c-line-2);border-radius:var(--r-sm);
+  padding:0 14px;font-family:var(--f-num);font-size:var(--fs-input);letter-spacing:.06em;
+  color:var(--c-ink);background:var(--c-surface);outline:none}
+.tf:focus{border-color:var(--c-ink)}
+.tf::placeholder{color:var(--c-ink-3);letter-spacing:.02em}
+.btn-main{display:flex;align-items:center;justify-content:center;width:100%;height:var(--h-btn-2);
+  margin-top:var(--s3);background:var(--c-action);color:var(--c-action-on);border:0;border-radius:var(--r-sm);
+  font-size:15px;letter-spacing:.14em;transition:opacity var(--dur) var(--ease)}
+.btn-main:active{opacity:.85}
+.btn-main[disabled]{opacity:.4;cursor:default}
+.v-note{margin-top:var(--s3);font-size:var(--fs-2xs);color:var(--c-ink-3);text-align:center}
+.v-sent{font-size:var(--fs-sm);color:var(--c-ink-2)}
+.v-sent b{font-family:var(--f-num);font-weight:500;color:var(--c-ink)}
+.v-sent a{color:var(--c-brand-ink);margin-left:6px}
+.otp{display:flex;gap:8px;margin-top:var(--s3)}
+.otp input{flex:1;min-width:0;height:52px;border:1px solid var(--c-line-2);border-radius:var(--r-sm);
+  text-align:center;font-family:var(--f-num);font-size:20px;color:var(--c-ink);outline:none;background:var(--c-surface)}
+.otp input:focus{border-color:var(--c-ink)}
+.resend{margin-top:var(--s3);font-size:var(--fs-xs);color:var(--c-ink-3);text-align:center}
+.resend button{background:none;border:0;padding:0;color:var(--c-brand-ink);font-size:inherit}
+.resend button[disabled]{color:var(--c-ink-3)}
+
+/* ---- 已驗證列 ---- */
+.who{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s4)}
+.who p{font-size:var(--fs-sm);color:var(--c-ink-2)}
+.who b{font-family:var(--f-num);font-weight:500;color:var(--c-ink);letter-spacing:.04em}
+.who button{background:none;border:0;padding:6px 0;font-size:var(--fs-xs);color:var(--c-brand-ink)}
+
+/* ---- 兩筆餘額（購物金／回饋金分開，規則不同）---- */
+.bal{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin-bottom:var(--s5)}
+.bal .b{background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--r-md);
+  padding:var(--s4) var(--s4) var(--s3)}
+.bal h3{font-size:var(--fs-xs);font-weight:500;color:var(--c-ink-2);letter-spacing:.08em}
+.bal .amt{font-family:var(--f-num);font-size:24px;font-weight:600;letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;margin:2px 0 4px}
+.bal .amt small{font-size:13px;font-weight:500;color:var(--c-ink-2);margin-right:2px}
+.bal p{font-size:var(--fs-2xs);color:var(--c-ink-3);line-height:1.5}
+
+/* ---- 區塊標題 ---- */
+.sec-h{display:flex;align-items:baseline;gap:8px;margin:0 0 var(--s3)}
+.sec-h h2{font-size:var(--fs-h2);letter-spacing:.06em}
+.sec-h span{font-family:var(--f-num);font-size:var(--fs-xs);color:var(--c-ink-3)}
+
+/* ---- 可用優惠券與折扣碼（只列可用的）---- */
+.coupons{display:grid;gap:var(--s2);margin-bottom:var(--s6)}
+.cp{position:relative;display:flex;align-items:center;gap:var(--s4);background:var(--c-surface);
+  border:1px solid var(--c-line);border-radius:var(--r-md);padding:var(--s3) var(--s4)}
+.cp::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--c-brand)}
+.cp .val{flex:none;width:84px}
+.cp .val b{display:block;font-family:var(--f-num);font-size:19px;font-weight:600;letter-spacing:.01em}
+.cp .val span{font-size:var(--fs-2xs);color:var(--c-brand-ink);letter-spacing:.06em}
+.cp .info{flex:1;min-width:0}
+.cp .info p{font-size:var(--fs-sm);color:var(--c-ink)}
+.cp .info small{display:block;font-size:var(--fs-2xs);color:var(--c-ink-3);line-height:1.5}
+.cp .info small b{font-family:var(--f-num);font-weight:500}
+.cp code{font-family:var(--f-num);font-size:var(--fs-xs);letter-spacing:.06em;background:var(--c-surface-2);
+  border-radius:var(--r-sm);padding:3px 8px;color:var(--c-ink-2)}
+
+/* ---- 訂單卡 ---- */
+.orders{display:grid;gap:var(--s3)}
+.oc{background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--r-md);overflow:hidden}
+.oc-head{display:flex;align-items:center;gap:var(--s3);width:100%;background:none;border:0;
+  padding:var(--s4);text-align:left}
+.oc-head .no{flex:1;min-width:0}
+.oc-head .no b{font-family:var(--f-num);font-size:var(--fs-sm);font-weight:500;letter-spacing:.04em}
+.oc-head .no small{display:block;font-family:var(--f-num);font-size:var(--fs-2xs);color:var(--c-ink-3)}
+.oc-head .tot{font-family:var(--f-num);font-size:var(--fs-sm);font-weight:600;
+  font-variant-numeric:tabular-nums;margin-right:2px}
+.oc-head .car{width:16px;height:16px;stroke:var(--c-ink-3);fill:none;stroke-width:1.5;flex:none;
+  transition:transform var(--dur) var(--ease)}
+.oc.open .oc-head .car{transform:rotate(180deg)}
+.st{flex:none;font-size:var(--fs-2xs);letter-spacing:.06em;border-radius:var(--r-pill);padding:3px 10px}
+.st.doing{background:var(--c-warn-bg);color:var(--c-warn)}
+.st.ship{background:var(--c-brand-bg);color:var(--c-brand-ink)}
+.st.done{background:var(--c-surface-2);color:var(--c-ink-3)}
+.oc-flag{display:flex;align-items:center;gap:6px;margin:0 var(--s4) var(--s3);padding:7px 10px;
+  background:var(--c-err-bg);border-radius:var(--r-sm);font-size:var(--fs-2xs);color:var(--c-err)}
+.oc-flag b{font-family:var(--f-num);font-weight:600}
+.oc-body{display:none;border-top:1px solid var(--c-line);padding:var(--s4)}
+.oc.open .oc-body{display:block}
+
+/* 進度（人話狀態，代購等待期要透明）*/
+.tl{display:flex;margin:2px 0 var(--s4)}
+.tl .t{flex:1;position:relative;text-align:center;font-size:10.5px;color:var(--c-ink-3);padding-top:16px}
+.tl .t::before{content:"";position:absolute;top:4px;left:50%;transform:translateX(-50%);
+  width:7px;height:7px;border-radius:50%;background:var(--c-line-2)}
+.tl .t::after{content:"";position:absolute;top:7px;left:calc(50% + 6px);right:calc(-50% + 6px);
+  height:1.5px;background:var(--c-line)}
+.tl .t:last-child::after{display:none}
+.tl .t.done{color:var(--c-ink-2)}
+.tl .t.done::before{background:var(--c-ink-2)}
+.tl .t.done::after{background:var(--c-ink-2)}
+.tl .t.cur{color:var(--c-brand-ink);font-weight:500}
+.tl .t.cur::before{background:var(--c-brand);width:9px;height:9px;top:3px}
+
+/* 品項列 */
+.it{display:flex;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--c-line)}
+.it:first-of-type{border-top:0}
+.it .ph{flex:none;width:52px}
+.it .d{flex:1;min-width:0}
+.it .d p{font-size:var(--fs-sm);line-height:1.5}
+.it .d small{display:block;font-size:var(--fs-2xs);color:var(--c-ink-3)}
+.it .pr{font-family:var(--f-num);font-size:var(--fs-sm);font-variant-numeric:tabular-nums;white-space:nowrap}
+.it.out .d p{color:var(--c-ink-3);text-decoration:line-through}
+.it.out .pr{color:var(--c-ink-3);text-decoration:line-through}
+.it .oud{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-size:var(--fs-2xs);
+  color:var(--c-err);text-decoration:none}
+.it .oud b{font-family:var(--f-num);font-weight:600}
+.it .ok-line{display:block;margin-top:1px;font-size:var(--fs-2xs);color:var(--c-ok);text-decoration:none}
+.it .ok-line b{font-family:var(--f-num);font-weight:500}
+
+/* 金額與出貨資訊 */
+.sum{border-top:1px solid var(--c-line);padding-top:var(--s3);display:grid;gap:5px}
+.sum .r{display:flex;justify-content:space-between;font-size:var(--fs-sm);color:var(--c-ink-2)}
+.sum .r b{font-family:var(--f-num);font-weight:500;font-variant-numeric:tabular-nums;color:var(--c-ink)}
+.sum .r.minus b{color:var(--c-brand-ink)}
+.sum .r.pay{margin-top:3px;font-size:var(--fs-body);color:var(--c-ink)}
+.sum .r.pay b{font-size:var(--fs-price);font-weight:600}
+.shipto{margin-top:var(--s3);padding:var(--s3);background:var(--c-surface-2);border-radius:var(--r-sm);
+  font-size:var(--fs-xs);color:var(--c-ink-2);line-height:1.7}
+.shipto b{font-family:var(--f-num);font-weight:500;letter-spacing:.04em}
+
+/* 頁尾提示（僅近一年）*/
+.tail{margin-top:var(--s5);text-align:center;font-size:var(--fs-xs);color:var(--c-ink-3)}
+.tail a{color:var(--c-brand-ink)}
+
+/* 桌機頁尾（工具頁一行版）*/
+footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:var(--s6) 0}
+@media(max-width:1079px){footer{display:none}}
+.site-copy{display:flex;gap:var(--s4);justify-content:center;font-size:var(--fs-2xs);color:var(--c-ink-3)}
+
+.hide{display:none !important}
+@media(prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<!-- 回饋金加碼結束時間：每期 10 天，正式站由後台填。全站必須是同一個值 -->
+<div class="notice">回饋金加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></div>
+
+<header>
+  <div class="wrap hd">
+    <button class="burger" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="index.html">BACKSTAGE</a>
+    <nav class="main">
+      <a class="hot" href="list.html">本週連線</a>
+      <a href="list.html">新品上架</a>
+      <a href="list.html">現貨</a>
+      <a href="list.html">上衣</a>
+      <a href="list.html">洋裝</a>
+      <a href="list.html">褲・裙</a>
+      <a href="list.html">外套</a>
+      <a href="list.html">包包・鞋子</a>
+      <a href="list.html">飾品配件</a>
+    </nav>
+    <div class="hd-icons">
+      <button class="icon-btn member" aria-label="收藏清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
+      <button class="icon-btn member" aria-label="會員" onclick="location.href='orders.html'"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
+      <button class="icon-btn" aria-label="購物車" onclick="location.href='checkout.html'"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-n">2</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <div class="mask" onclick="document.getElementById('drawer').classList.remove('open')"></div>
+  <div class="panel">
+    <h4 class="cat-h">類別</h4>
+    <a href="list.html">本週連線</a>
+    <a href="list.html">新品上架</a>
+    <a href="list.html">現貨</a>
+    <a href="list.html">上衣</a>
+    <a href="list.html">洋裝</a>
+    <a href="list.html">褲・裙</a>
+    <a href="list.html">外套</a>
+    <a href="list.html">包包・鞋子</a>
+    <a href="list.html">飾品配件</a>
+    <div class="sec">
+      <h4>購物與服務</h4>
+      <a href="https://line.me/R/ti/p/@2bfabulous">LINE 客服</a>
+      <a href="orders.html" class="now">我的訂單</a>
+      <a href="#">會員優惠</a>
+      <a href="https://www.backstagetime.com/privacy-policy">隱私權政策</a>
+    </div>
+    <div class="sec">
+      <h4>關於品牌</h4>
+      <a href="https://www.backstagetime.com/about">經營理念</a>
+    </div>
+    <p class="brand">韓國選品女裝・東大門直送<br>穿得自然輕鬆，帶點甜美不誇張<br>© 2026 BACKSTAGE 仰揚有限公司</p>
+  </div>
+</div>
+
+<main>
+
+<!-- ========== 狀態一：手機驗證（任何舊資料只能在驗證成功之後） ========== -->
+<section id="stepVerify">
+  <div class="pg-h">
+    <h1>我的訂單</h1>
+    <p>輸入手機號碼收驗證碼，就能查訂單、購物金與優惠</p>
+  </div>
+  <div class="vcard" id="phoneCard">
+    <label for="tel">手機號碼</label>
+    <input class="tf" id="tel" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="09xx xxx xxx">
+    <button class="btn-main" id="sendBtn" onclick="sendCode()">傳送驗證碼</button>
+    <p class="v-note">為保護妳的購買資料，驗證通過才會顯示訂單</p>
+  </div>
+  <div class="vcard hide" id="otpCard">
+    <p class="v-sent">驗證碼已傳送至 <b id="sentTo">0912 345 678</b><a href="#" onclick="backToPhone();return false">改號碼</a></p>
+    <div class="otp" id="otpBox">
+      <input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1"><input type="tel" inputmode="numeric" maxlength="1">
+    </div>
+    <p class="resend">沒收到？<button id="resendBtn" disabled onclick="sendCode()">重新傳送（<span id="cdn">60</span>）</button></p>
+  </div>
+</section>
+
+<!-- ========== 狀態二：驗證通過後的訂單總覽（DEMO 資料，正式站接後台） ========== -->
+<section id="stepDash" class="hide">
+  <div class="pg-h">
+    <h1>我的訂單</h1>
+  </div>
+  <div class="who">
+    <p>已驗證 <b id="whoTel">0912***678</b></p>
+    <button onclick="logoutMock()">換一支號碼查詢</button>
+  </div>
+
+  <!-- 兩筆餘額：購物金（斷貨退回）與回饋金（滿額回饋）分開、規則不同 -->
+  <div class="bal">
+    <div class="b">
+      <h3>購物金</h3>
+      <p class="amt"><small>NT$</small>690</p>
+      <p>斷貨退回的金額，結帳時直接折抵</p>
+    </div>
+    <div class="b">
+      <h3>回饋金</h3>
+      <p class="amt"><small>NT$</small>300</p>
+      <p>連線滿額回饋，一單一張、與折扣碼擇一</p>
+    </div>
+  </div>
+
+  <!-- 只列目前可用的（洋 8/19 定：不放已使用與過期紀錄） -->
+  <div class="sec-h"><h2>可用優惠</h2><span>2 張</span></div>
+  <div class="coupons">
+    <div class="cp">
+      <div class="val"><b>NT$300</b><span>回饋金</span></div>
+      <div class="info">
+        <p>8 月連線滿額回饋</p>
+        <small>結帳勾選折抵・<b>9/30</b> 前有效・與折扣碼擇一</small>
+      </div>
+    </div>
+    <div class="cp">
+      <div class="val"><b>NT$100</b><span>折扣碼</span></div>
+      <div class="info">
+        <p>換季感謝碼 <code>BS100</code></p>
+        <small>滿 NT$2,000 可用・<b>8/31</b> 前有效</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- 近一年訂單 -->
+  <div class="sec-h"><h2>訂單</h2></div>
+  <div class="orders">
+
+    <!-- 1. 韓國採購中 -->
+    <div class="oc" id="o1">
+      <button class="oc-head" onclick="toggleOrder('o1')">
+        <div class="no"><b>BS-260812034</b><small>2026/08/12</small></div>
+        <span class="st doing">韓國採購中</span>
+        <span class="tot">NT$3,280</span>
+        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="oc-body">
+        <div class="tl">
+          <span class="t done">已收到訂單</span><span class="t cur">韓國採購中</span><span class="t">已到台灣倉</span><span class="t">已出貨</span><span class="t">已完成</span>
+        </div>
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>雲朵感針織罩衫</p><small>奶茶・F</small></div>
+          <span class="pr">NT$1,680</span>
+        </div>
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>垂墜直筒寬褲</p><small>黑・M</small></div>
+          <span class="pr">NT$1,600</span>
+        </div>
+        <div class="sum">
+          <div class="r"><span>小計</span><b>NT$3,280</b></div>
+          <div class="r"><span>運費（滿 3,000 免運）</span><b>NT$0</b></div>
+          <div class="r pay"><span>實付金額</span><b>NT$3,280</b></div>
+        </div>
+        <p class="shipto">7-11 富錦門市取貨・連線商品備貨 7–30 天，到台灣倉會再通知妳</p>
+      </div>
+    </div>
+
+    <!-- 2. 已出貨，其中一件斷貨退購物金 -->
+    <div class="oc" id="o2">
+      <button class="oc-head" onclick="toggleOrder('o2')">
+        <div class="no"><b>BS-260801016</b><small>2026/08/01</small></div>
+        <span class="st ship">已出貨</span>
+        <span class="tot">NT$3,460</span>
+        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <p class="oc-flag">1 件斷貨・<b>NT$690</b> 已退回購物金</p>
+      <div class="oc-body">
+        <div class="tl">
+          <span class="t done">已收到訂單</span><span class="t done">韓國採購中</span><span class="t done">已到台灣倉</span><span class="t cur">已出貨</span><span class="t">已完成</span>
+        </div>
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>木耳邊雪紡襯衫</p><small>象牙白・F</small></div>
+          <span class="pr">NT$1,480</span>
+        </div>
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>鬆緊腰傘襬長裙</p><small>燕麥・F</small></div>
+          <span class="pr">NT$1,980</span>
+        </div>
+        <div class="it out">
+          <div class="ph"></div>
+          <div class="d">
+            <p>細帶方領背心</p><small>杏・F</small>
+            <span class="oud">韓國斷貨 <b>NT$690</b> 已退回購物金</span>
+            <span class="ok-line"><b>8/14</b> 入帳，結帳時可直接折抵</span>
+          </div>
+          <span class="pr">NT$690</span>
+        </div>
+        <div class="sum">
+          <div class="r"><span>小計（3 件）</span><b>NT$4,150</b></div>
+          <div class="r minus"><span>斷貨退回購物金</span><b>−NT$690</b></div>
+          <div class="r"><span>運費（滿 3,000 免運）</span><b>NT$0</b></div>
+          <div class="r pay"><span>實付金額</span><b>NT$3,460</b></div>
+        </div>
+        <p class="shipto">黑貓宅配・配送單號 <b>903-2214-5860</b>・8/17 出貨</p>
+      </div>
+    </div>
+
+    <!-- 3. 已完成 -->
+    <div class="oc" id="o3">
+      <button class="oc-head" onclick="toggleOrder('o3')">
+        <div class="no"><b>BS-260619008</b><small>2026/06/19</small></div>
+        <span class="st done">已完成</span>
+        <span class="tot">NT$2,680</span>
+        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="oc-body">
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>抓皺短袖洋裝</p><small>灰藍・F</small></div>
+          <span class="pr">NT$1,780</span>
+        </div>
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>珍珠釦針織小外套</p><small>白・F</small></div>
+          <span class="pr">NT$900</span>
+        </div>
+        <div class="sum">
+          <div class="r"><span>小計</span><b>NT$2,680</b></div>
+          <div class="r"><span>運費（7-11 取貨）</span><b>NT$60</b></div>
+          <div class="r minus"><span>回饋金折抵</span><b>−NT$100</b></div>
+          <div class="r pay"><span>實付金額</span><b>NT$2,640</b></div>
+        </div>
+        <p class="shipto">7-11 富錦門市取貨・6/30 完成取貨</p>
+      </div>
+    </div>
+
+    <!-- 4. 去年（仍在一年內） -->
+    <div class="oc" id="o4">
+      <button class="oc-head" onclick="toggleOrder('o4')">
+        <div class="no"><b>BS-251102021</b><small>2025/11/02</small></div>
+        <span class="st done">已完成</span>
+        <span class="tot">NT$1,580</span>
+        <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="oc-body">
+        <div class="it">
+          <div class="ph"></div>
+          <div class="d"><p>高領坑條針織上衣</p><small>可可・F</small></div>
+          <span class="pr">NT$1,580</span>
+        </div>
+        <div class="sum">
+          <div class="r"><span>小計</span><b>NT$1,580</b></div>
+          <div class="r"><span>運費（7-11 取貨）</span><b>NT$60</b></div>
+          <div class="r pay"><span>實付金額</span><b>NT$1,640</b></div>
+        </div>
+        <p class="shipto">7-11 民生門市取貨・11/15 完成取貨</p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap site-copy">
+    <span>© 2026 BACKSTAGE</span><span>仰揚有限公司</span><span>連線期滿 NT$3,000 免運＋回饋金・7-11 取貨／宅配／國際配送</span>
+  </div>
+</footer>
+
+<nav class="tabbar">
+  <a href="index.html"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9z"/></svg></span>首頁</a>
+  <a href="#" onclick="document.getElementById('drawer').classList.add('open');return false"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>分類</a>
+  <a href="#"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></span>收藏</a>
+  <a href="checkout.html"><span class="tb-ic"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n">2</span></span>購物車</a>
+  <a href="orders.html" class="on"><span class="tb-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>會員</a>
+</nav>
+
+<script>
+/* 加碼倒數：改 data-deadline 即可換期（不是收單截止，過期照常販售） */
+(function(){
+  var els=document.querySelectorAll('.cd');if(!els.length)return;
+  function pad(n){return n<10?'0'+n:n}
+  function tick(){
+    els.forEach(function(el){
+      var end=new Date(el.dataset.deadline).getTime(),d=end-Date.now();
+      if(d<=0){el.textContent='本期加碼已結束';return}
+      var day=Math.floor(d/86400000),h=Math.floor(d%86400000/3600000),
+          m=Math.floor(d%3600000/60000),s=Math.floor(d%60000/1000);
+      el.textContent=(day>0?day+' 天 ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+    });
+  }
+  tick();setInterval(tick,1000);
+})();
+
+/* ===== 驗證流程 DEMO =====
+   正式站規則（三條安全規則）：
+   1) 任何舊資料回填或查詢一律在驗證成功之後
+   2) 不論號碼有無購買紀錄一律照發驗證碼，驗證通過才分岔
+   3) 訂單查詢走同一套手機驗證，驗證狀態綁號碼               */
+var cdTimer=null;
+function fmtTel(t){return t.replace(/(\d{4})(\d{3})(\d{3})/,'$1 $2 $3')}
+function sendCode(){
+  var tel=document.getElementById('tel').value.replace(/\D/g,'');
+  if(!/^09\d{8}$/.test(tel)){
+    document.getElementById('tel').focus();
+    document.getElementById('tel').style.borderColor='var(--c-err)';
+    return;
+  }
+  document.getElementById('tel').style.borderColor='';
+  document.getElementById('sentTo').textContent=fmtTel(tel);
+  document.getElementById('phoneCard').classList.add('hide');
+  document.getElementById('otpCard').classList.remove('hide');
+  document.getElementById('otpBox').querySelector('input').focus();
+  var n=60,btn=document.getElementById('resendBtn'),cdn=document.getElementById('cdn');
+  btn.disabled=true;cdn.textContent=n;
+  clearInterval(cdTimer);
+  cdTimer=setInterval(function(){
+    n--;cdn.textContent=n;
+    if(n<=0){clearInterval(cdTimer);btn.disabled=false;btn.textContent='重新傳送'}
+  },1000);
+}
+function backToPhone(){
+  document.getElementById('otpCard').classList.add('hide');
+  document.getElementById('phoneCard').classList.remove('hide');
+  clearInterval(cdTimer);
+}
+/* OTP：自動跳格，6 碼滿即驗證（DEMO 任意 6 碼通過） */
+(function(){
+  var box=document.getElementById('otpBox'),ins=box.querySelectorAll('input');
+  ins.forEach(function(inp,i){
+    inp.addEventListener('input',function(){
+      inp.value=inp.value.replace(/\D/g,'').slice(0,1);
+      if(inp.value&&i<ins.length-1)ins[i+1].focus();
+      var code=Array.prototype.map.call(ins,function(x){return x.value}).join('');
+      if(code.length===6)verified();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!inp.value&&i>0)ins[i-1].focus();
+    });
+  });
+})();
+/* 驗證過就不再驗證（省簡訊費）：正式站由後台登入狀態控制，
+   驗證綁手機號碼、有效期建議 180 天，僅換號碼或逾期才重發驗證碼。
+   DEMO 用瀏覽器記憶示意同一行為 */
+function verified(){
+  var tel=document.getElementById('tel').value.replace(/\D/g,'');
+  showDash(tel);
+  try{localStorage.setItem('bs_tel',tel)}catch(e){}
+  clearInterval(cdTimer);
+}
+function showDash(tel){
+  document.getElementById('whoTel').textContent=tel.slice(0,4)+'***'+tel.slice(7);
+  document.getElementById('stepVerify').classList.add('hide');
+  document.getElementById('stepDash').classList.remove('hide');
+  window.scrollTo(0,0);
+}
+(function(){
+  try{
+    var t=localStorage.getItem('bs_tel');
+    if(t&&/^09\d{8}$/.test(t))showDash(t);
+  }catch(e){}
+})();
+function logoutMock(){
+  try{localStorage.removeItem('bs_tel')}catch(e){}
+  document.getElementById('stepDash').classList.add('hide');
+  document.getElementById('stepVerify').classList.remove('hide');
+  backToPhone();
+  document.getElementById('tel').value='';
+  document.getElementById('otpBox').querySelectorAll('input').forEach(function(x){x.value=''});
+  window.scrollTo(0,0);
+}
+function toggleOrder(id){document.getElementById(id).classList.toggle('open')}
+</script>
+</body>
+</html>
