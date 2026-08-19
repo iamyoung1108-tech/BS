@@ -833,7 +833,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
         <input type="text" id="code" placeholder="輸入折扣碼" autocomplete="off">
         <button type="button" id="applyCode">套用</button>
       </div>
-      <p class="hint" id="codeLock" hidden style="margin:calc(var(--s4) * -1 + 4px) 0 var(--s4)">一筆訂單只能用一種折抵，已選了上方的購物金或回饋金</p>
 
       <div class="sum">
         <div class="sum-row"><span>商品小計</span><b id="s-sub">NT$1,870</b></div>
@@ -1207,7 +1206,6 @@ function render(){
   $('#s-use-row').hidden    = m.use === 0;
   $('#s-use').textContent   = '−' + NT(m.use);
   $('#couponBox').hidden    = m.use > 0 && pick !== 'code';
-  $('#codeLock').hidden     = !(m.use > 0 && pick !== 'code');
   $('#s-bonus-row').hidden  = m.bonus === 0;
   $('#s-bonus').textContent = NT(m.bonus);
   const shipCell = $('#s-ship');
