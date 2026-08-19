@@ -308,15 +308,15 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 /* ---- 會員優惠：滿額三階 ---- */
 .lead{font-size:14.5px;color:var(--c-ink-2);line-height:1.9;margin:0 0 var(--s2)}
 .lead b{color:var(--c-brand-ink);font-weight:500;font-family:var(--f-num)}
-.urge{display:inline-block;margin:0 0 var(--s5);padding:6px 12px;background:var(--c-brand-bg);
-  border-radius:var(--r-sm);font-size:12.5px;color:var(--c-brand-ink)}
+.urge{display:block;margin:0 0 var(--s5);font-size:12.5px;color:var(--c-brand-ink)}
 .tiers{background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--r-md);
   overflow:hidden;margin:0 0 var(--s2)}
 .tier{display:flex;align-items:center;gap:var(--s3);padding:var(--s4);border-top:1px solid var(--c-line)}
 .tier:first-child{border-top:0}
 .tier .th{flex:1;font-family:var(--f-num);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
 .tier .th small{display:block;font-family:var(--f-body);font-size:11.5px;font-weight:400;color:var(--c-ink-3)}
-.tier .give{font-family:var(--f-num);font-size:16px;font-weight:600;color:var(--c-brand-ink);white-space:nowrap}
+.tier .give{font-family:var(--f-num);font-size:16px;font-weight:600;color:var(--c-brand-ink);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
 .tiers-note{font-size:11.5px;color:var(--c-ink-3);margin:0 0 var(--s6)}
 .rule{display:flex;gap:var(--s3);margin:0 0 var(--s3)}
 .rule .no{flex:none;width:22px;height:22px;border-radius:50%;background:var(--c-surface-2);
@@ -325,6 +325,12 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .rule p b{color:var(--c-ink);font-weight:500}
 .fine{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--c-line);
   font-size:12px;color:var(--c-ink-3);line-height:2}
+
+/* 標題三行收攏（洋 8/19：間距太大）*/
+.pg-h{margin-bottom:6px}
+.prose .slogan{margin:0 0 10px}
+.lead{margin:0 0 6px}
+.urge{margin:0 0 var(--s4)}
 </style>
 </head>
 <body>
@@ -389,7 +395,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <div class="pg-h"><h1>會員優惠</h1></div>
 <article class="prose">
 <p class="slogan">BACKSTAGE・BONUS TIME 連線回饋金</p>
-<p class="lead">每月十天 Bonus TIME，單筆訂單實際支付金額（扣除運費後）達門檻，即享免運再送回饋金，最高送 <b>NT$600</b></p>
+<p class="lead">每月十天，單筆滿額免運再送回饋金，最高送 <b>NT$600</b></p>
 <p class="urge">僅限連線公告後 10 天內下單享有，請把握黃金時機</p>
 
 <div class="tiers">
@@ -397,7 +403,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <div class="tier"><span class="th">滿 NT$5,000<small>免運</small></span><span class="give">送 NT$300 回饋金</span></div>
   <div class="tier"><span class="th">滿 NT$8,000<small>免運</small></span><span class="give">送 NT$600 回饋金</span></div>
 </div>
-<p class="tiers-note">單筆擇優贈送，不累贈</p>
+<p class="tiers-note">金額以扣除運費後計算・單筆擇優贈送不累贈</p>
 
 <h2>回饋金使用</h2>
 <div class="rule"><span class="no">1</span><p><b>領取</b>：訂單付款完成後自動歸戶至您的會員帳戶</p></div>
