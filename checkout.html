@@ -287,6 +287,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .bn-why{margin-top:8px;font-size:12.5px;color:var(--c-ink-2);line-height:1.7}
 .bn-why b{font-family:var(--f-num);font-weight:500}
 .bn-why .warn{color:var(--c-warn)}
+/* 四選一折抵列（洋 8/19：購物金／一張回饋金／折價券／優惠碼 擇一）*/
+.bn-opt{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;
+  padding:9px 0;text-align:left;border-top:1px solid rgba(107,79,73,.14);cursor:pointer}
+.bn-opt:first-of-type{border-top:0}
+.bn-opt .rd{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--c-line-2);background:#fff}
+.bn-opt.on .rd{border-color:var(--c-ink);background:var(--c-ink);box-shadow:inset 0 0 0 3.5px #fff}
+.bn-opt .t{flex:1;min-width:0;font-size:13.5px;color:var(--c-ink);line-height:1.5}
+.bn-opt .t small{display:block;font-size:11.5px;color:var(--c-ink-2)}
+.bn-opt .t small b{font-family:var(--f-num);font-weight:500}
+.bn-opt .v{font-family:var(--f-num);font-size:13.5px;font-weight:600;color:var(--c-brand-ink);white-space:nowrap}
+.bn-opt.dis{opacity:.45}
 /* 老客捷徑：一行安靜的文字，不是按鈕、不是卡片、不擋路。
    新客看到會自動略過，老客點了才展開 */
 .returning{max-width:var(--max-w-form);margin:0 auto var(--s3);padding:0 var(--edge)}
@@ -499,7 +510,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 
       <!-- 回饋金放在購物車頁，不放結帳頁：她要先知道有多少可以折，才決定要不要再加一件 -->
       <div class="bonus" id="bonusBox">
-        <button class="bn-open" type="button" id="bnOpen">有回饋金要折抵？輸入手機查餘額<span class="ar">＋</span></button>
+        <button class="bn-open" type="button" id="bnOpen">有購物金或回饋金？輸入手機查餘額<span class="ar">＋</span></button>
         <div class="bn-body" id="bnBody" hidden>
           <div class="bn-row">
             <input type="tel" id="bnTel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="0912345678">
@@ -508,12 +519,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
           <p class="hint" id="bnHint">驗證後會帶出餘額，結帳資料也會一併自動填好</p>
         </div>
         <div class="bn-card" id="bnCard" hidden>
-          <div class="bn-hd"><span id="bnTitle">你的回饋金</span><b id="bnAmt">NT$0</b></div>
-          <label class="bn-use" id="bnUseRow">
-            <input type="checkbox" id="bnUse">
-            <span>這一單折抵掉</span>
-          </label>
-          <p class="bn-why" id="bnWhy"></p>
+          <div class="bn-hd"><span id="bnTitle">你的折抵・一單限用一種</span></div>
+          <div id="bnRows"></div>
         </div>
       </div>
     </section>
@@ -826,14 +833,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
         <input type="text" id="code" placeholder="輸入折扣碼" autocomplete="off">
         <button type="button" id="applyCode">套用</button>
       </div>
-      <p class="hint" id="codeLock" hidden style="margin:calc(var(--s4) * -1 + 4px) 0 var(--s4)">已使用回饋金折抵，一張訂單只能使用一張折扣碼</p>
+      <p class="hint" id="codeLock" hidden style="margin:calc(var(--s4) * -1 + 4px) 0 var(--s4)">一筆訂單只能用一種折抵，已選了上方的購物金或回饋金</p>
 
       <div class="sum">
         <div class="sum-row"><span>商品小計</span><b id="s-sub">NT$1,870</b></div>
-        <div class="sum-row minus" id="s-use-row" hidden><span>回饋金折抵</span><b id="s-use">−NT$0</b></div>
+        <div class="sum-row minus" id="s-use-row" hidden><span id="s-useLabel">折抵</span><b id="s-use">−NT$0</b></div>
         <div class="sum-row"><span>運費</span><b id="s-ship">NT$60</b></div>
         <div class="sum-total"><span>應付金額</span><b id="s-total">NT$1,930</b></div>
-        <div class="sum-row bonus" id="s-bonus-row" hidden><span>本單可獲得回饋金</span><b id="s-bonus"></b></div>
+        <div class="sum-row bonus" id="s-bonus-row" hidden><span>本單完成後發送回饋金（下次消費可折）</span><b id="s-bonus"></b></div>
       </div>
     </section>
 
@@ -1073,10 +1080,16 @@ let addons = {}, step = 1, lastRemoved = null;
    LINE 只出現在完成訂購頁（加好友接收出貨消息），那時它的價值才成立。
    KNOWN_TELS 是 DEMO 用的「買過的號碼」，正式站改成打後台查詢 */
 let verified = false, verifiedTel = '';
-/* DEMO 用的會員與回饋金餘額。正式站改成打後台查詢（且一律在驗證成功之後才查） */
-const MEMBER_BONUS = {'0912345678': 300};
-const KNOWN_TELS = Object.keys(MEMBER_BONUS);
-let bonusBalance = 0;   // 這位客人手上的回饋金
+/* DEMO 用的會員錢包。正式站改成打後台查詢（且一律在驗證成功之後才查）
+   規則（洋 8/19）：購物金＝現金池無門檻無期限；回饋金＝逐張券、滿千可折、不可合併；
+   一單四選一：購物金／一張回饋金／一張折價券／一個優惠碼 */
+const MEMBER_WALLET = {'0912345678': {cash:690, vouchers:[
+  {amt:300, label:'8 月連線滿額回饋', exp:'9/30'},
+  {amt:100, label:'7 月連線滿額回饋', exp:'9/15'}
+]}};
+const KNOWN_TELS = Object.keys(MEMBER_WALLET);
+let wallet = null;      // 驗證後帶入
+let pick = null;        // 'cash' | 'v0' | 'v1'… | 'code'
 let bonusUse = 0;       // 這一單實際折抵掉多少
 
 const NT = n => 'NT$' + Math.round(n).toLocaleString('en-US');
@@ -1184,6 +1197,7 @@ function drawShipBar(m){
 }
 
 function render(){
+  syncPickLite();
   const m = money();
   drawBag(); drawAddons(); drawSummary(); drawShipBar(m);
 
@@ -1192,8 +1206,8 @@ function render(){
   $('#s-sub').textContent   = NT(m.gross);
   $('#s-use-row').hidden    = m.use === 0;
   $('#s-use').textContent   = '−' + NT(m.use);
-  $('#couponBox').hidden    = m.use > 0;
-  $('#codeLock').hidden     = m.use === 0;
+  $('#couponBox').hidden    = m.use > 0 && pick !== 'code';
+  $('#codeLock').hidden     = !(m.use > 0 && pick !== 'code');
   $('#s-bonus-row').hidden  = m.bonus === 0;
   $('#s-bonus').textContent = NT(m.bonus);
   const shipCell = $('#s-ship');
@@ -1294,7 +1308,14 @@ $('#sumToggle').addEventListener('click', ()=>{
   $('#sumToggle').textContent = open ? '收合明細' : '查看明細';
 });
 $('#applyCode').addEventListener('click', ()=>{
-  $('#applyCode').textContent = $('#code').value.trim() ? '已套用' : '套用';
+  if(!$('#code').value.trim()){
+    if(pick === 'code') pick = null;
+    $('#applyCode').textContent = '套用';
+    syncPick(); return;
+  }
+  pick = 'code';                       // 用碼也是四選一的一種
+  $('#applyCode').textContent = '已套用';
+  syncPick();
 });
 
 /* 加碼倒數：直接讀 CONNECT_END，與首頁／商品頁同一個時間 */
@@ -1384,44 +1405,62 @@ $('#bnSend').addEventListener('click', ()=>{
 
 /* 只有驗證成功之後才准查餘額 */
 function showBonus(tel){
-  bonusBalance = MEMBER_BONUS[tel] || 0;
+  wallet = MEMBER_WALLET[tel] || null;
   $('#bnOpen').hidden = true;
   $('#bnBody').hidden = true;
   $('#bnCard').hidden = false;
-  if(bonusBalance === 0){
-    $('#bnTitle').textContent = '目前沒有可折抵的回饋金';
-    $('#bnAmt').textContent = 'NT$0';
-    $('#bnUseRow').hidden = true;
-    $('#bnWhy').textContent = '這一單消費滿額之後就會有，下次就能折。';
-  }else{
-    $('#bnTitle').textContent = '你的回饋金';
-    $('#bnAmt').textContent = NT(bonusBalance);
-    $('#bnUseRow').hidden = false;
-  }
+  $('#bnTitle').textContent = (!wallet || (wallet.cash === 0 && wallet.vouchers.length === 0))
+    ? '目前沒有可折抵的購物金或回饋金'
+    : '你的折抵・一單限用一種';
   fillFromHistory(tel, true);   // 順手把結帳資料也準備好
-  bonusWhy();
-  render();
+  syncPick();
 }
 
-/* 折抵會連動免運與滿額贈，當場算給她看，不要等到結帳完才發現 */
-function bonusWhy(){
-  if(bonusBalance === 0) return;
-  const keep = bonusUse;
-  bonusUse = 0;      const a = money();   // 不折
-  bonusUse = Math.min(bonusBalance, a.gross); const b = money();   // 折
-  bonusUse = keep;
-  const saved = a.total - b.total;
-  let txt = '折抵後實付 <b>' + NT(b.total) + '</b>，比不折少付 <b>' + NT(saved) + '</b>。';
-  if(a.free && !b.free) txt += '<span class="warn">但折抵後未滿 ' + NT(FREE_SHIP) + '，會多收運費。</span>';
-  if(a.bonus > b.bonus) txt += '<span class="warn">滿額回饋金也會從 ' + NT(a.bonus) + ' 變成 ' + NT(b.bonus) + '。</span>';
-  txt += '免運與滿額贈都以折抵後的金額計算。';
-  $('#bnWhy').innerHTML = txt;
+/* 四選一：同步 bonusUse 與列狀態（不觸發 render，供 render 開頭呼叫）*/
+function syncPickLite(){
+  const goods  = items.reduce((a,i)=>a + i.price*i.qty, 0);
+  const addSum = addonList.filter(a=>addons[a.id]).reduce((a,i)=>a+i.price,0);
+  const gross  = goods + addSum;
+  if(pick && pick !== 'code' && !wallet) pick = null;           // 錢包類折抵需先驗證
+  if(pick && pick[0] === 'v' && gross < 1000){ pick = null; }   // 未滿千自動退選
+  if(pick === 'cash')      bonusUse = Math.min(wallet.cash, gross);
+  else if(pick && pick[0] === 'v') bonusUse = Math.min(wallet.vouchers[+pick.slice(1)].amt, gross);
+  else if(pick === 'code') bonusUse = Math.min(100, gross);     // DEMO：任意碼折 100 示意
+  else bonusUse = 0;
+  const lbl = pick === 'cash' ? '購物金折抵' : pick === 'code' ? '折扣碼折抵' : '回饋金折抵';
+  const el = document.getElementById('s-useLabel'); if(el) el.textContent = lbl;
+  drawBnRows(gross);
 }
-$('#bnUse').addEventListener('change', ()=>{
-  bonusUse = $('#bnUse').checked ? bonusBalance : 0;
-  bonusWhy();
-  render();
-});
+function drawBnRows(gross){
+  const box = document.getElementById('bnRows'); if(!box || !wallet) return;
+  let h = '';
+  if(wallet.cash > 0){
+    h += bnRow('cash', '購物金折抵', '斷貨購物金一年內使用完成', Math.min(wallet.cash, gross), false);
+  }
+  wallet.vouchers.forEach((v,i)=>{
+    const locked = gross < 1000;
+    h += bnRow('v'+i, '回饋金 '+NT(v.amt)+'（'+v.label+'）',
+               locked ? '滿千可折・本單未滿千' : '滿千可折・'+v.exp+' 前有效・單筆訂單折抵',
+               v.amt, locked);
+  });
+  box.innerHTML = h;
+}
+function bnRow(key, title, note, amt, locked){
+  return '<button type="button" class="bn-opt'+(pick===key?' on':'')+(locked?' dis':'')+'" '
+       + 'onclick="pickBn(\''+key+'\','+(locked?1:0)+')">'
+       + '<span class="rd"></span>'
+       + '<span class="t">'+title+'<small>'+note+'</small></span>'
+       + '<span class="v">−'+NT(amt)+'</span></button>';
+}
+function pickBn(key, locked){
+  if(locked){ showToast('這張券要滿千才能折，再逛一件就到了'); return; }
+  pick = (pick === key) ? null : key;
+  if(pick !== 'code'){ $('#code').value = ''; $('#applyCode').textContent = '套用'; }
+  syncPick();
+}
+function syncPick(){ syncPickLite(); render(); }
+
+/* 洋 8/19：折抵不再逐條解釋連鎖影響，明細數字自己會說話 */
 
 /* 驗證狀態只綁在「那一支號碼」上。改了號碼就等於沒驗過，送出前會再驗一次 */
 function markTelVerified(){
