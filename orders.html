@@ -17,7 +17,7 @@
    - 僅顯示近一年訂單，更早的導 LINE 客服
    - 購物金（斷貨退回）與回饋金（滿額回饋）是分開的兩筆，規則不同（洋 8/19 定）
    - 優惠券與折扣碼只列目前可用的（洋 8/19 定）
-   - 訂單狀態用人話：已收到訂單 → 韓國採購中 → 已到台灣倉 → 已出貨 → 已完成
+   - 訂單狀態四段（洋 8/19 定）：訂單成立 → 採購中 → 包裝中 → 已出貨
    - 介面文字不用句號、說明限一行
    本頁為 DEMO：驗證碼任意 6 碼可過，資料皆為示意，正式站接後台
    ============================================================ */
@@ -335,11 +335,11 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <a href="https://line.me/R/ti/p/@2bfabulous" target="_blank" rel="noopener">LINE 客服</a>
       <a href="orders.html" class="now">我的訂單</a>
       <a href="#">會員優惠</a>
-      <a href="https://www.backstagetime.com/privacy-policy" target="_blank" rel="noopener">隱私權政策</a>
+      <a href="https://www.backstagetime.com/privacy-policy">隱私權政策</a>
     </div>
     <div class="sec">
       <h4>關於品牌</h4>
-      <a href="https://www.backstagetime.com/about" target="_blank" rel="noopener">經營理念</a>
+      <a href="https://www.backstagetime.com/about">經營理念</a>
     </div>
     <p class="brand">韓國選品女裝・東大門直送<br>穿得自然輕鬆，帶點甜美不誇張<br>© 2026 BACKSTAGE 仰揚有限公司</p>
   </div>
@@ -415,17 +415,17 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   <div class="sec-h"><h2>訂單</h2></div>
   <div class="orders">
 
-    <!-- 1. 韓國採購中 -->
+    <!-- 1. 採購中 -->
     <div class="oc" id="o1">
       <button class="oc-head" onclick="toggleOrder('o1')">
         <div class="no"><b>BS-260812034</b><small>2026/08/12</small></div>
-        <span class="st doing">韓國採購中</span>
+        <span class="st doing">採購中</span>
         <span class="tot">NT$3,280</span>
         <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="oc-body">
         <div class="tl">
-          <span class="t done">已收到訂單</span><span class="t cur">韓國採購中</span><span class="t">已到台灣倉</span><span class="t">已出貨</span><span class="t">已完成</span>
+          <span class="t done">訂單成立</span><span class="t cur">採購中</span><span class="t">包裝中</span><span class="t">已出貨</span>
         </div>
         <div class="it">
           <div class="ph"></div>
@@ -442,7 +442,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
           <div class="r"><span>運費（滿 3,000 免運）</span><b>NT$0</b></div>
           <div class="r pay"><span>實付金額</span><b>NT$3,280</b></div>
         </div>
-        <p class="shipto">7-11 富錦門市取貨・連線商品備貨 7–30 天，到台灣倉會再通知妳</p>
+        <p class="shipto">7-11 富錦門市取貨・出貨後提供取貨編號</p>
       </div>
     </div>
 
@@ -457,7 +457,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <p class="oc-flag">1 件斷貨・<b>NT$690</b> 已退回購物金</p>
       <div class="oc-body">
         <div class="tl">
-          <span class="t done">已收到訂單</span><span class="t done">韓國採購中</span><span class="t done">已到台灣倉</span><span class="t cur">已出貨</span><span class="t">已完成</span>
+          <span class="t done">訂單成立</span><span class="t done">採購中</span><span class="t done">包裝中</span><span class="t cur">已出貨</span>
         </div>
         <div class="it">
           <div class="ph"></div>
@@ -488,11 +488,11 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       </div>
     </div>
 
-    <!-- 3. 已完成 -->
+    <!-- 3. 已出貨（歷史單） -->
     <div class="oc" id="o3">
       <button class="oc-head" onclick="toggleOrder('o3')">
         <div class="no"><b>BS-260619008</b><small>2026/06/19</small></div>
-        <span class="st done">已完成</span>
+        <span class="st done">已出貨</span>
         <span class="tot">NT$2,680</span>
         <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -513,7 +513,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
           <div class="r minus"><span>回饋金折抵</span><b>−NT$100</b></div>
           <div class="r pay"><span>實付金額</span><b>NT$2,640</b></div>
         </div>
-        <p class="shipto">7-11 富錦門市取貨・6/30 完成取貨</p>
+        <p class="shipto">7-11 富錦門市取貨・取貨編號 <b>F231 0824 6617</b>・6/30 取件完成</p>
       </div>
     </div>
 
@@ -521,7 +521,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
     <div class="oc" id="o4">
       <button class="oc-head" onclick="toggleOrder('o4')">
         <div class="no"><b>BS-251102021</b><small>2025/11/02</small></div>
-        <span class="st done">已完成</span>
+        <span class="st done">已出貨</span>
         <span class="tot">NT$1,580</span>
         <svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -536,7 +536,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
           <div class="r"><span>運費（7-11 取貨）</span><b>NT$60</b></div>
           <div class="r pay"><span>實付金額</span><b>NT$1,640</b></div>
         </div>
-        <p class="shipto">7-11 民生門市取貨・11/15 完成取貨</p>
+        <p class="shipto">7-11 民生門市取貨・取貨編號 <b>F229 5511 0348</b>・11/15 取件完成</p>
       </div>
     </div>
 
