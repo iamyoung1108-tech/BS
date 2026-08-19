@@ -634,7 +634,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
         <span class="tag">連線</span>
         <span class="dl">回饋金加碼倒數 <b class="cd" data-deadline="2026-08-24T23:59:59+08:00">--:--:--</b></span>
         <span class="mini-acts">
-          <button class="ma" aria-label="收藏" onclick="this.classList.toggle('on')"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
+          <button class="ma" aria-label="收藏" onclick="favToggle(this)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg></button>
           <button class="ma" aria-label="分享"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="17" cy="6" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M8.2 10.8l6.6-3.6M8.2 13.2l6.6 3.6"/></svg></button>
         </span>
       </div>
@@ -777,11 +777,11 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
   </div>
 </div>
 
-<!-- 手機黏底：選單＋心儀＋購物車三個出口 ＋ 加入購物車 -->
+<!-- 手機黏底：選單＋收藏＋購物車三個出口 ＋ 加入購物車（命名統一「收藏」，洋 8/19 定）-->
 <div class="buybar">
   <div class="buybar-in">
     <a class="bb-ic" href="#" aria-label="選單" onclick="document.getElementById('drawer').classList.add('open');return false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>選單</a>
-    <a class="bb-ic" href="#" aria-label="心儀清單"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg><span class="n" id="favN">5</span>心儀</a>
+    <a class="bb-ic" href="favorites.html" aria-label="收藏"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.2 11C19 15.4 12 20 12 20z"/></svg><span class="n" id="favN">5</span>收藏</a>
     <a class="bb-ic" href="checkout.html" aria-label="購物車"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="n cart-n2" id="cartN2">2</span>購物車</a>
     <button class="add" onclick="addCart()"><i class="cdot" id="bbDot" style="background:#C8BAA8"></i>加入購物車</button>
   </div>
@@ -921,6 +921,13 @@ function bump(){
   });
 }
 /* 提示膠囊：只說結果，不重複商品名（畫面上已經打勾了） */
+/* 收藏切換：標題旁愛心（收藏入口只在商品頁，洋 8/19 定）；DEMO 存本頁，正式站綁驗證帳號 */
+function favToggle(btn){
+  btn.classList.toggle('on');
+  var on=btn.classList.contains('on'),n=document.getElementById('favN');
+  if(n)n.textContent=parseInt(n.textContent,10)+(on?1:-1);
+  toast(on?'已加入收藏':'已從收藏移除');
+}
 function toast(msg,ms){
   var t=document.getElementById('toast');
   document.getElementById('toastTxt').textContent=msg||'已加入';
