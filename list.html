@@ -214,7 +214,19 @@ body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
   background:none;border:1px solid var(--c-line-2);border-radius:var(--r-sm);
   font-size:13.5px;color:var(--c-ink);white-space:nowrap;transition:border-color var(--dur) var(--ease)}
 .tool-btn:hover{border-color:var(--c-ink)}
-.tool-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
+.tool-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none;transition:transform var(--dur) var(--ease)}
+/* 頁面內下拉選單（洋 8/19：分類不開抽屜、排序要能點選，手機桌機同一套）*/
+.dd-wrap{position:relative}
+.dd-wrap.open .tool-btn{border-color:var(--c-ink)}
+.dd-wrap.open .tool-btn svg{transform:rotate(180deg)}
+.dd{position:absolute;top:calc(100% + 6px);left:0;z-index:var(--z-raise);min-width:150px;
+  background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--r-md);
+  box-shadow:var(--shadow-soft);padding:6px 0;display:none}
+.dd-wrap.open .dd{display:block}
+.dd button{display:block;width:100%;text-align:left;background:none;border:0;
+  padding:9px 18px;font-size:14px;color:var(--c-ink);line-height:1.5;white-space:nowrap}
+.dd button:hover{background:var(--c-surface-2)}
+.dd button.on{color:var(--c-brand-ink)}
 /* 窄機（SE 等）：間距與按鈕內距再收一階，一列鎖住不溢出 */
 @media(max-width:359px){
   .toolbar-in{gap:8px}
@@ -346,8 +358,29 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 
 <div class="toolbar">
   <div class="wrap toolbar-in">
-    <button class="tool-btn cat" onclick="document.getElementById('drawer').classList.add('open')">洋裝 <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
-    <button class="tool-btn" id="sortBtn" onclick="nextSort()">排序<span class="sort-v" id="sortVal">：本週推薦</span> <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="dd-wrap" id="catWrap">
+      <button class="tool-btn cat" id="catBtn" onclick="toggleDD('catWrap')"><span id="catVal">洋裝</span> <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="dd"><!-- 正式站各項為分類連結，DEMO 換字示意 -->
+        <button onclick="pickCat(this)">本週連線</button>
+        <button onclick="pickCat(this)">新品上架</button>
+        <button onclick="pickCat(this)">現貨</button>
+        <button onclick="pickCat(this)">上衣</button>
+        <button class="on" onclick="pickCat(this)">洋裝</button>
+        <button onclick="pickCat(this)">褲・裙</button>
+        <button onclick="pickCat(this)">外套</button>
+        <button onclick="pickCat(this)">包包・鞋子</button>
+        <button onclick="pickCat(this)">飾品配件</button>
+      </div>
+    </div>
+    <div class="dd-wrap" id="sortWrap">
+      <button class="tool-btn" id="sortBtn" onclick="toggleDD('sortWrap')">排序<span class="sort-v" id="sortVal">：本週推薦</span> <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="dd">
+        <button class="on" onclick="pickSort(this)">本週推薦</button>
+        <button onclick="pickSort(this)">上架時間</button>
+        <button onclick="pickSort(this)">價格低到高</button>
+        <button onclick="pickSort(this)">價格高到低</button>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -454,10 +487,20 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 })();
 
 /* 排序：DEMO 只輪播選項文字 */
-var sorts=['本週推薦','上架時間','價格低到高','價格高到低'],si=0;
-function nextSort(){
-  si=(si+1)%sorts.length;
-  document.getElementById('sortVal').textContent='：'+sorts[si];
+/* 工具列下拉：一次只開一個，點外面關閉 */
+function toggleDD(id){
+  var el=document.getElementById(id),was=el.classList.contains('open');
+  closeDD();if(!was)el.classList.add('open');
+}
+function closeDD(){document.querySelectorAll('.dd-wrap').forEach(function(x){x.classList.remove('open')})}
+document.addEventListener('click',function(e){if(!e.target.closest('.dd-wrap'))closeDD()});
+function mark(btn){btn.parentElement.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});btn.classList.add('on')}
+function pickCat(btn){
+  mark(btn);document.getElementById('catVal').textContent=btn.textContent;closeDD();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function pickSort(btn){
+  mark(btn);document.getElementById('sortVal').textContent='：'+btn.textContent;closeDD();
 }
 </script>
 </body>
