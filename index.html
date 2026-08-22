@@ -275,7 +275,9 @@ section{padding:var(--s5) 0 var(--s7)}
 .story{text-align:center}
 .story-in{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s4);align-items:center}
 .story h2{font-family:var(--f-title);font-size:22px;letter-spacing:.14em}
-.story p{font-size:14.5px;color:var(--c-ink-2)}
+.story h2.one-line{font-size:19px;letter-spacing:.1em;white-space:nowrap}
+@media(min-width:720px){.story h2.one-line{font-size:24px}}
+.story p{font-size:clamp(12.5px,3.6vw,14.5px);color:var(--c-ink-2);text-wrap:normal}
 .story .sign{font-family:var(--f-title);font-size:14px;letter-spacing:.3em;color:var(--c-brand-ink)}
 @media(min-width:1080px){.story h2{font-size:26px}.story p{font-size:15.5px}}
 
@@ -546,9 +548,8 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 <section class="story" style="border-top:1px solid var(--c-line)">
   <div class="wrap story-in">
     <span class="kicker">OUR STORY</span>
-    <h2>據說，穿洋挑的衣服<br>會帶來好運</h2>
-    <p>十多年前，從部落格的穿搭紀錄開始，很幸運能陪著許多人走過戀愛、步入家庭、迎來孩子。我相信，好看的衣服不需要複雜的搭配技巧，而是隨手穿，就能讓人擁有喜悅，自帶發光的好運氣場。</p>
-    <p>今天，就為自己挑幾件心動的單品，<br>一起把日常過得舒適又美麗。</p>
+    <h2 class="one-line">據說，穿洋挑的衣服會帶來好運</h2>
+    <p>十多年前，從部落格的穿搭紀錄開始，<br>很幸運能陪著許多人走過戀愛、步入家庭、迎來孩子。<br>我相信，好看的衣服不需要複雜的搭配技巧，<br>而是隨手穿，就能讓人擁有喜悅，自帶發光的好運氣場。<br>今天，就為自己挑幾件心動的單品，<br>一起把日常過得舒適又美麗。</p>
     <p class="sign">— 洋洋</p>
     <a class="btn ghost" href="about.html">閱讀完整品牌故事</a>
   </div>
