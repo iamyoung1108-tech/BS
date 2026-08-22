@@ -82,6 +82,7 @@ body{
   font-synthesis:none;font-feature-settings:"palt" 1;line-break:strict;
   text-spacing-trim:trim-start;text-autospace:normal;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
 }
 h1,h2,h3{margin:0;font-weight:500;line-height:var(--lh-tight);text-wrap:balance}
 p{margin:0;text-wrap:pretty}
@@ -275,9 +276,9 @@ section{padding:var(--s5) 0 var(--s7)}
 .story{text-align:center}
 .story-in{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s4);align-items:center}
 .story h2{font-family:var(--f-title);font-size:22px;letter-spacing:.14em}
-.story h2.one-line{font-size:19px;letter-spacing:.1em;white-space:nowrap}
+.story h2.one-line{font-size:min(19px,calc((100vw - 32px)/16));letter-spacing:.1em;white-space:nowrap}
 @media(min-width:720px){.story h2.one-line{font-size:24px}}
-.story p{font-size:clamp(12.5px,3.6vw,14.5px);color:var(--c-ink-2);text-wrap:normal}
+.story p{white-space:nowrap;font-size:min(14.5px,calc((100vw - 32px)/25.5));color:var(--c-ink-2);text-wrap:normal}
 .story .sign{font-family:var(--f-title);font-size:14px;letter-spacing:.3em;color:var(--c-brand-ink)}
 @media(min-width:1080px){.story h2{font-size:26px}.story p{font-size:15.5px}}
 
