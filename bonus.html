@@ -331,6 +331,9 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .prose .slogan{margin:0;line-height:1.9}
 .lead{margin:0;line-height:1.9}
 .urge{margin:0 0 var(--s4);line-height:1.9}
+
+/* 修正：文字頁段落關掉 text-wrap:pretty 的重新配行，恢復逐行填滿（右緣大空白 BUG）*/
+main p,main li{text-wrap:normal}
 </style>
 </head>
 <body>

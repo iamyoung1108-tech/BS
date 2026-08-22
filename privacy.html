@@ -303,6 +303,9 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .prose .kv{margin:var(--s2) 0 0;padding:var(--s3) var(--s4);background:var(--c-surface-2);border-radius:var(--r-sm);
   font-size:13.5px;color:var(--c-ink-2);line-height:2}
 .prose .kv b{font-family:var(--f-num);letter-spacing:.03em}
+
+/* 修正：文字頁段落關掉 text-wrap:pretty 的重新配行，恢復逐行填滿（右緣大空白 BUG）*/
+main p,main li{text-wrap:normal}
 </style>
 </head>
 <body>
@@ -352,7 +355,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
       <h4>購物與服務</h4>
       <a href="https://line.me/R/ti/p/@2bfabulous" target="_blank" rel="noopener">LINE 客服</a>
       <a href="orders.html">我的訂單</a>
-      <a href="#">會員優惠</a>
+      <a href="bonus.html">會員優惠</a>
       <a href="privacy.html" class="now">隱私權政策</a>
     </div>
     <div class="sec">
@@ -408,7 +411,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
         <h4>購物與服務</h4>
         <a href="https://line.me/R/ti/p/@2bfabulous" target="_blank" rel="noopener">LINE 客服</a>
         <a href="orders.html">我的訂單</a>
-        <a href="#">會員優惠</a>
+        <a href="bonus.html">會員優惠</a>
         <a href="privacy.html" class="now">隱私權政策</a>
       </div>
       <div class="ftc">
