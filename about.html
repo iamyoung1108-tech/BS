@@ -56,7 +56,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 h1,h2,h3{margin:0;font-weight:500;line-height:var(--lh-tight);text-wrap:balance}
-p{margin:0;text-wrap:pretty}
+p{margin:0;text-wrap:normal}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;letter-spacing:inherit;cursor:pointer}
 img{display:block;max-width:100%}
@@ -305,7 +305,7 @@ footer{background:var(--c-surface);border-top:1px solid var(--c-line);padding:va
 .prose .kv b{font-family:var(--f-num);letter-spacing:.03em}
 
 /* 修正：文字頁段落關掉 text-wrap:pretty 的重新配行，恢復逐行填滿（右緣大空白 BUG）*/
-main p,main li{text-wrap:normal}
+main p,main li,.prose p,.prose li{text-wrap:normal!important}
 </style>
 </head>
 <body>
